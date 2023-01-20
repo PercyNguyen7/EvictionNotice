@@ -1,0 +1,52 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  @font-face {
+    font-family: 'RetroGaming';
+    src: url(assets/fonts/PixelOperatorMono.ttf) format('truetype');
+}
+*{
+  font-family: 'RetroGaming',monospace;  
+  font-weight: 200;
+}
+body{
+    background-color: black;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.content-wrapper{
+    background-color: rgba(223, 223, 223, 0.027);
+    width: 90%;
+    padding: 1rem;
+    max-width: 50rem;
+}
+
+#screen{
+    margin: 2rem 0;
+}
+
+p{
+    color: white;
+}
+
+
+.inputBox{
+    outline: none;
+    background-color: rgb(24, 24, 24);
+    color: white;
+    border: 0px solid rgba(255, 255, 255, 0.377);
+    border-left: 2px solid rgb(31, 31, 31);
+    width: clamp(10rem,40vw,20rem);
+    
+    
+}
+.invisible{
+    opacity: 0;
+    pointer-events: none;
+}
