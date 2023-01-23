@@ -26,13 +26,23 @@ body{
     padding: 1rem;
     max-width: 50rem;
 }
+#text1{
+    background-color: rgba(255, 0, 0, 0.05);
+    margin: 1rem 0;
+}
+#text2{
+    background-color: rgba(0, 0, 255, 0.08);
+    /* min-height: 3rem */
+    margin-bottom:4rem;
 
+}
 #screen{
     margin: 2rem 0;
 }
 
 p{
     color: white;
+    font-size: 20px;
 }
 
 
@@ -43,7 +53,7 @@ p{
     border: 0px solid rgba(255, 255, 255, 0.377);
     border-left: 2px solid rgb(31, 31, 31);
     width: clamp(10rem,40vw,20rem);
-    
+    font-size: 1.25rem;
     
 }
 .invisible{
