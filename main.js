@@ -1,12 +1,13 @@
 
 const typingSFX = new Audio('assets/sounds/typingSFX.mp3');
 const typingSFX2 = new Audio('assets/sounds/typingSFX.mp3');
+const typingDialogueSFX = new Audio('assets/sounds/typingDialogueSFX.mp3')
 const doorbellBtnSFX = new Audio('assets/sounds/doorbellBtn.mp3');
 typingSFX.volume =0.6;
 typingSFX2.volume =0.4;
 const doorKnockSFX = new Audio('assets/sounds/knockDoor.mp3');
 let currentArea = 'Entrance';
-
+let paused = false;
 const westKW = ['west','go left'];
 const northKW = ['north','go in', 'enter'];
 const southKW = ['south','go back'];
@@ -20,11 +21,13 @@ let waiting = false;
 let waiting2 = false;
 let waiting3 = false;
 let waiting4 = false; 
-let yelledMary = false;
+
 let metMary = false;
 let mailTaken = false;
 let pictureTaken = false;
-let tvOff = false;
+
+let yelledMary = true;
+let tvOff = true;
 
 let dialogueOn = false;
 
@@ -267,7 +270,7 @@ function livingRoomState(){
         
         else if (firstWord === 'yell' && finalInput.includes('mary') && tvOff){
             
-            dialogueTxt=`Mary: "Charles...Is that you?"`;
+            dialogueTxt=`Mary: "Charles...Is that you? But I thought I lost you for a second...Silly old me... Now ..................................Go back to bed  Charles. I'll make you your favorite dish the way you've always loved them... "`;
             actionTxt= `Unexpected...reply to her with the truth...`;
             dialogueOn =true;
             typeText3();
@@ -326,17 +329,18 @@ function bedRoomState(){
 // }
 
          typeText();
- 
+
 // function typeText(){
 //     areaText.innerHTML += txt;
 //  }
         function setData() {
         return [txt, areaText]
         };
-
+ 
         function typeText() {
         let typingSpeed =0;
-     
+ 
+      
         areaText.innerHTML ='';
         // res is an array 
         waiting = true;
@@ -345,27 +349,39 @@ function bedRoomState(){
         const txt = res[0];
 
         if (txt.length < 100){
-            typingSpeed = 10;
+            typingSpeed =10;;;
         }
         else if (txt.length >= 100){
-            typingSpeed = 5;
+            typingSpeed =5;;
         }
+       console.log(typingSpeed);
         // console.log(res);
         // const areaText = res[1];
         let i = 0;
-        const timerId = setInterval(() => {
-        areaText.innerHTML += txt.charAt(i);
-        i++;
-        if (i === txt.length) {
-        clearInterval(timerId);
-        typingSFX.pause();
-        typingSFX.currentTime=0;
-        waiting = false;
-        typeText2();
-        }
-        },typingSpeed);
 
-        }
+        const timerId = setInterval(() => {
+        if (!paused){
+            areaText.innerHTML += txt.charAt(i);
+            i++;
+        
+            if (txt.charAt(i)===' ' && txt.charAt(i-1)==='.'){
+                pauseInterval();           
+            }
+            console.log(txt.charAt(i));
+            if (i === txt.length) {
+            
+            typingSFX.pause();
+            typingSFX.currentTime=0;
+            waiting = false;
+            typeText2();
+            clearInterval(timerId);
+            }
+         }
+        },typingSpeed);}
+
+        
+
+
 
         function setData2() {
             return [txt2, objText]
@@ -382,25 +398,30 @@ function bedRoomState(){
             const txt = res[0];
     
             if (txt.length < 100){
-                typingSpeed = 10;
+                typingSpeed =10;;;
             }
             else if (txt.length >= 100){
-                typingSpeed = 5;
+                typingSpeed =5;;
             }
             // console.log(res);
             // const areaText = res[1];
             let i = 0;
             const timerId = setInterval(() => {
-            objText.innerHTML += txt.charAt(i);
-            i++;
-            if (i === txt.length) {
-            clearInterval(timerId);
-            typingSFX.pause();
-            typingSFX.currentTime=0;
-            waiting2 = false;
-   
+            if (!paused){
+                
+                objText.innerHTML += txt.charAt(i);
+                i++;
+                if (txt.charAt(i)===' ' && txt.charAt(i-1)==='.'){
+                    pauseInterval();           
+                }
+                if (i === txt.length) {
+                clearInterval(timerId);
+                typingSFX.pause();
+                typingSFX.currentTime=0;
+                waiting2 = false;
+                }
             }
-            },typingSpeed);
+            },typingSpeed)
         }
 // **************************** 3
         function setData3() {
@@ -409,34 +430,44 @@ function bedRoomState(){
 
         function typeText3() {
         let typingSpeed =0;
-     
+   
+        typingDialogueSFX.loop = true;
+
         dialogueText.innerHTML ='';
         // res is an array 
         waiting3 = true;
-        typingSFX2.play();
+        typingDialogueSFX.play();
         const res =  setData3();
         const txt = res[0];
 
         if (txt.length < 100){
-            typingSpeed = 10;
+            typingSpeed = 40;
         }
         else if (txt.length >= 100){
-            typingSpeed = 5;
+            typingSpeed = 40;
         }
         console.log(res);
         // const areaText = res[1];
         let i = 0;
+
+       
         const timerId = setInterval(() => {
-        dialogueText.innerHTML += txt.charAt(i);
-        i++;
-        if (i === txt.length) {
-        clearInterval(timerId);
-        typingSFX2.pause();
-        typingSFX2.currentTime=0;
-        waiting3 = false;
-        typeText4();
-        }
-        },typingSpeed);
+        if (!paused){
+            dialogueText.innerHTML += txt.charAt(i);
+            i++;
+            if (txt.charAt(i)===' ' && txt.charAt(i-1)==='.'){
+                pauseInterval();           
+            }
+            if (i === txt.length) {
+            clearInterval(timerId);
+            typingDialogueSFX.pause();
+            typingDialogueSFX.currentTime=0;
+            typingDialogueSFX.playbackRate=1;
+            setTimeout(typeText4,2000);
+            waiting3 = false;
+            }
+         }
+             },typingSpeed); 
     }
 
 // **************************** 3
@@ -452,29 +483,40 @@ function bedRoomState(){
         // res is an array 
         waiting4 = true;
         typingSFX2.play();
+
         const res =  setData4();
         const txt = res[0];
 
         if (txt.length < 100){
-            typingSpeed = 10;
+            typingSpeed =10;;;
         }
         else if (txt.length >= 100){
-            typingSpeed = 5;
+            typingSpeed =5;;
         }
         // console.log(res);
         // const areaText = res[1];
         let i = 0;
         const timerId = setInterval(() => {
-        actionText.innerHTML += txt.charAt(i);
-        i++;
-        if (i === txt.length) {
-        clearInterval(timerId);
-        typingSFX2.pause();
-        typingSFX2.currentTime=0;
-        waiting4 = false;
+        if (!paused){
+            actionText.innerHTML += txt.charAt(i);
+            i++;
+            if (txt.charAt(i)===' ' && txt.charAt(i-1)==='.'){
+                pauseInterval();           
+            }
+            if (i === txt.length) {
+            clearInterval(timerId);
+            typingSFX2.pause();
+            typingSFX2.currentTime=0;
+            waiting4 = false;
         }
+    }
         },typingSpeed);
     }
+
+    // typingSFX2.addEventListener('ended', function() {
+    //     this.currentTime = 0;
+    //     this.play();
+    // }, false);
         // function setData() {
         // const txt = `Watch me as I get typed out before your very eyes using JavaScript's setInterval() function.`;
         // const outputDiv = document.getElementById('typed-content');
@@ -492,3 +534,12 @@ function bedRoomState(){
         // if (i === txt.length) {clearInterval(timerId);}
         // },50);
         // }
+
+        function pauseInterval(){
+       
+            paused =true;
+            setTimeout(resumeInterval,200);
+         }
+         function resumeInterval(){
+             paused =false;
+          }
