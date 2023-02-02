@@ -1,5 +1,4 @@
 
-
 const typingSFX = new Audio('assets/sounds/typingSFX.mp3');
 const typingSFX2 = new Audio('assets/sounds/typingSFX.mp3');
 const doorbellBtnSFX = new Audio('assets/sounds/doorbellBtn.mp3');
@@ -15,23 +14,32 @@ const eastKW = ['east','go right','back'];
 const userInput = document.getElementById('userInput');
 const areaText = document.getElementById('text1');
 const objText = document.getElementById('text2');
+const dialogueText = document.getElementById('dialogue-text');
 const actionText = document.getElementById('action-text');
 let waiting = false;
-
+let waiting2 = false;
+let waiting3 = false;
+let waiting4 = false; 
+let yelledMary = false;
 let metMary = false;
 let mailTaken = false;
 let pictureTaken = false;
+let tvOff = false;
+
+let dialogueOn = false;
 
 let txt = `In front of you lies Mary Gray's apartment. You're here to evict the tenant. Apartment 704. Female. Born in 1956.`;
 let txt2 =`Strangely enough the front door is wide open. On your right is a doorbell.`;
+let dialogueTxt = ` `;
 // let actionTxt = ``;
 let actionTxt ='Type a command and Press Enter';
 
-typeText3();
+typeText4();
 function checkWaiting(){
-    if (!waiting){
+    if (!waiting && !waiting2 && !waiting3 && !waiting4){
         submitInput();
         userInput.value='';
+        console.log('working');
     }
 }
 
@@ -39,11 +47,12 @@ function submitInput() {
     switch(currentArea){
         case "Entrance":
             entranceState();
-            console.log('entrace-state');
+            // console.log('entrace-state');
+           
         break;
         case "Foyer":
             foyerState();
-            console.log('foyer-state');
+            // console.log('foyer-state');
           break;
         case "Kitchen":
             kitchenState();
@@ -58,11 +67,14 @@ function submitInput() {
           text = "You're cheating son...";
     }
 }
-let yelledMary = false;
+
 function entranceState(){
     const input = document.getElementById("userInput").value;
     const finalInput = input.toLowerCase();
     const firstWord = finalInput.split(" ")[0];
+
+    const firstTwoWords = finalInput.split(' ').slice(0,2).join(' ');
+    console.log(firstTwoWords);
     const knockDoorKW = ['knock','door'];
    
     // if contains north keywords, or n,
@@ -70,34 +82,33 @@ function entranceState(){
     // if (currentArea === 'entrance'){
         if (
             // northKW.some(el => finalInput.includes(el)) 
-            
             firstWord === 'north'  && yelledMary && yelledMary || firstWord === 'n'  && yelledMary){
                 txt = `You step foot into the foyer. It reeks of mold and mildew. To your left is a kitchen, and to your right is the living room. Down the hallway is a door to what you suspect a bedroom.`;
 
-                txt2=`Unopened mail enveloppes scatter on the ground. The hallway's walls are decorated with a dozen framed picture.`;
-        
-                if (!mailTaken && pictureTaken){
-                    txt2=`Unopened mail enveloppes scatter on the ground.`;
+                txt2=` `;
+                if (!mailTaken){
+                    txt2+=`Unopened mail enveloppes scatter on the ground.`;
                 }
-                else if (mailTaken && !pictureTaken){
-                    txt2=`The hallway's walls are decorated with a dozen framed picture.`;
-                }
-                else if (mailTaken && pictureTaken){
-                    txt2=` `;
+                if (!pictureTaken){
+                    txt2+=`The hallway's walls are decorated with a dozen framed picture.`;
                 }
                 currentArea = 'Foyer';
                 typeText();
                 actionTxt =` `;
         }
-        else if (firstWord ==='north '&&  !yelledMary || firstWord === 'n'  && !yelledMary){
+        else if (firstWord ==='north' && !yelledMary || firstWord === 'n'  && !yelledMary){
             actionTxt =`You're well versed in the law. Even though entering an open door will be peaceful entry, it's good courtesy to let the tenant know before coming in.`;
+        }
+        else if (firstWord ==='west' || firstWord === 'w'|| firstWord ==='east' || firstWord === 'e' || firstWord ==='south' || firstWord === 's'){
+            actionTxt =`You can't go that way.`;
         }
         else if (firstWord === 'look'){
             actionTxt =`Look at what?`;
         }
         else if (firstWord==='look' && finalInput.includes('door')){
             actionTxt =`The door is right in front of you. Some of us have a job. Yours happens to be evicting tenant Mary Gray. Not all of tenants leave in peace so make it quick and no one will be hurt.`;
-        }
+        } 
+        
         else if ((firstWord==='knock' && !finalInput.includes('door'))){
             actionTxt =`Can't knock that`;
         }
@@ -131,7 +142,7 @@ function entranceState(){
         else{
             actionTxt =`Unrecognized command ` + `'`+input+`'`;
         }
-        typeText3();
+        typeText4();
     // }
 }
 //  **********************FOYER****************************
@@ -153,27 +164,34 @@ function foyerState(){
             typeText();
             actionTxt =` `;
         } else if (firstWord==='east'|| firstWord=== 'e'){
-            txt = `The kitchen is here`;
+            txt = `You step foot in the kitchen`;
             txt2=' ';
             currentArea = 'Kitchen';
             typeText();
             actionTxt =` `;
         }  else if (firstWord==='west'|| firstWord=== 'w'){
-            txt = `You step in the living room. To your right is the foyer.`;
-            txt2=' The fridge is humming rather loudly. The faucet is dripping a small stream of water. You see a slide of what seems like homemade cake laying on the table.';
+            txt = `You step foot into the living room. To your right is the foyer.`;
+            txt2=` `;
+            if (!metMary){
+                txt2+=`Mary is fast asleep on her rocking chair.`;                
+            } 
+            if (!tvOff){
+                txt2+=` The TV hung on the wall is deafening loud...Mary is old after all. Do be careful...`;                
+            }
             currentArea = 'LivingRoom';
             typeText();
             actionTxt =` `;
-        }   else if (firstWord ==='look' && finalInput.includes('mail')){
+        }  
+            // else if (firstWord ==='')
+            else if (firstWord ==='look' && finalInput.includes('mail')){
             actionTxt =`Electricity bills...Water bills.. and the Eviction Notice!... all unopened. Under these letters lies a 1 inch pile of medical bills. Again, unopened. `;
-        }else if (firstWord ==='look' && finalInput.includes('picture')|| firstWord ==='look' && finalInput.includes('print')){
+        }   else if (firstWord ==='look' && finalInput.includes('picture')|| firstWord ==='look' && finalInput.includes('print')){
             actionTxt =`Beautiful pictures of an old couple travelling the world. You spot wedding photos dated back in 2013. That was 10 years ago. Mary is seen grinning next to her supposedly husband. You couldn't help but smiling yourself... And here you thought marriage was off the table for 50 year olds.`;
-        }else if (firstWord ==='take' && finalInput.includes('mails') && metMary){
+        }   else if (firstWord ==='take' && finalInput.includes('mail') && metMary){
             actionTxt =`You take the stack of mails.`;
-        } else if (firstWord ==='take' && finalInput.includes('picture') && metMary){
+        }   else if (firstWord ==='take' && finalInput.includes('picture') && metMary){
             actionTxt =`You take the wedding photo.`;
-        }
-        else if (firstWord ==='take' && finalInput.includes('picture') && !metMary || firstWord ==='take' && finalInput.includes('mails') && !metMary){
+        }   else if (firstWord ==='take' && finalInput.includes('picture') && !metMary || firstWord ==='take' && finalInput.includes('mails') && !metMary){
             actionTxt =`You have no reason to do so.`;
         }
         else{
@@ -185,7 +203,7 @@ function foyerState(){
             
         //     // alert(finalInput);
         // }
-        typeText3();
+        typeText4();
     // }
 }
 
@@ -198,24 +216,22 @@ function kitchenState(){
        if (firstWord==='west'|| firstWord=== 'w'){
             txt = `You step foot into the foyer. It reeks of mold and mildew. To your left is a kitchen, and to your right is the living room. Down the hallway is a door to what you suspect a bedroom.`;
 
-            txt2=`Unopened mail enveloppes scatter on the ground. The hallway's walls are decorated with a dozen framed picture.`;
-    
-            if (!mailTaken && pictureTaken){
-                txt2=`Unopened mail enveloppes scatter on the ground.`;
-            }
-            else if (mailTaken && !pictureTaken){
-                txt2=`The hallway's walls are decorated with a dozen framed picture.`;
-            }
-            else if (mailTaken && pictureTaken){
-                txt2=` `;
-            }
+            txt2=` `;
+                if (!mailTaken){
+                    txt2+=`Unopened mail enveloppes scatter on the ground.`;
+                }
+                if (!pictureTaken){
+                    txt2+=`The hallway's walls are decorated with a dozen framed picture.`;
+                }
             currentArea = 'Foyer';
             typeText();
             actionTxt =` `;
-        }  else{
+        }   else if (firstWord ==='north' || firstWord === 'n'|| firstWord ==='east' || firstWord === 'e' || firstWord ==='south' || firstWord === 's'){
+            actionTxt =`You can't go that way.`;
+        }   else{
             actionTxt =`Unrecognized command ` + `'`+input+`'`;
         }
-  typeText3();
+  typeText4();
     // }
 }
 //  **************** LIVING ROOM **********************
@@ -223,28 +239,50 @@ function livingRoomState(){
     const input = document.getElementById("userInput").value;
     const finalInput = input.toLowerCase();
     const firstWord = finalInput.split(" ")[0];
+    const firstTwoWords = finalInput.split(' ').slice(0,2).join(' ');
+    console.log(firstTwoWords);
     // if (currentArea === 'area'){
        if (firstWord==='east'|| firstWord=== 'e'){
             txt = `You step foot into the foyer. It reeks of mold and mildew. To your left is a kitchen, and to your right is the living room. Down the hallway is a door to what you suspect a bedroom.`;
 
-            txt2=`Unopened mail enveloppes scatter on the ground. The hallway's walls are decorated with a dozen framed picture.`;
-    
-            if (!mailTaken && pictureTaken){
-                txt2=`Unopened mail enveloppes scatter on the ground.`;
-            }
-            else if (mailTaken && !pictureTaken){
-                txt2=`The hallway's walls are decorated with a dozen framed picture.`;
-            }
-            else if (mailTaken && pictureTaken){
-                txt2=` `;
-            }
+            txt2=` `;
+                if (!mailTaken){
+                    txt2+=`Unopened mail enveloppes scatter on the ground.`;
+                }
+                if (!pictureTaken){
+                    txt2+=`The hallway's walls are decorated with a dozen framed picture.`;
+                }
             currentArea = 'Foyer';
             typeText();
             actionTxt =` `;
-        }  else{
+        } 
+        else if (firstTwoWords ==`turn off` && finalInput.includes(`tv`) && !tvOff){
+            actionTxt =`You turn off the TV. You're not paid enough to deal with this headache... `;
+            tvOff = true;
+        }
+        else if (firstWord === 'yell' && finalInput.includes('mary') && !tvOff){
+            actionTxt= `You yelled at Mary but the soap drama TV overwhelms your voice.`;
+           
+        }
+        
+        else if (firstWord === 'yell' && finalInput.includes('mary') && tvOff){
+            
+            dialogueTxt=`Mary: "Charles...Is that you?"`;
+            actionTxt= `Unexpected...reply to her with the truth...`;
+            dialogueOn =true;
+            typeText3();
+        }
+
+        else if (firstWord ==='north' || firstWord === 'n'|| firstWord ==='east' || firstWord === 'e' || firstWord ==='south' || firstWord === 's'){
+            actionTxt =`You can't go that way.`;
+        }    
+        else{
             actionTxt =`Unrecognized command ` + `'`+input+`'`;
         }
-  typeText3();
+        if (!dialogueOn){
+            typeText4();
+        }
+
     // }
 }
 
@@ -254,26 +292,21 @@ function bedRoomState(){
     const firstWord = finalInput.split(" ")[0];
     // if (currentArea === 'area'){
        if (firstWord==='south'|| firstWord=== 's'){
-            txt = `You step foot into the foyer. It reeks of mold and mildew. To your left is a kitchen, and to your right is the living room. Down the hallway is a door to what you suspect a bedroom.`;
-
-            txt2=`Unopened mail enveloppes scatter on the ground. The hallway's walls are decorated with a dozen framed picture.`;
-    
-            if (!mailTaken && pictureTaken){
-                txt2=`Unopened mail enveloppes scatter on the ground.`;
-            }
-            else if (mailTaken && !pictureTaken){
-                txt2=`The hallway's walls are decorated with a dozen framed picture.`;
-            }
-            else if (mailTaken && pictureTaken){
-                txt2=` `;
-            }
+            txt = `You step foot into the foyer. It reeks of mold and mildew. To your left is the kitchen, and to your right is the living room. Down the hallway is a door to what you suspect a bedroom.`;
+            txt2=` `;
+                if (!mailTaken){
+                    txt2+=`Unopened mail enveloppes scatter on the ground.`;
+                }
+                if (!pictureTaken){
+                    txt2+=`The hallway's walls are decorated with a dozen framed picture.`;
+                }
             currentArea = 'Foyer';
             typeText();
             actionTxt =` `;
         }  else{
             actionTxt =`Unrecognized command ` + `'`+input+`'`;
         }
-  typeText3();
+  typeText4();
     // }
 }
 // myFunction();
@@ -317,7 +350,7 @@ function bedRoomState(){
         else if (txt.length >= 100){
             typingSpeed = 5;
         }
-        console.log(res);
+        // console.log(res);
         // const areaText = res[1];
         let i = 0;
         const timerId = setInterval(() => {
@@ -334,40 +367,6 @@ function bedRoomState(){
 
         }
 
-        // function setData2() {
-        //     return [actionTxt, actionText]
-        //     };
-    
-        //     function typeText2() {
-        //     let typingSpeed =0;
-         
-        //     actionText.innerHTML ='';
-        //     // res is an array 
-        //     waiting = true;
-        //     // typingSFX2.play();
-        //     const res =  setData3();
-        //     const txt = res[0];
-    
-        //     if (txt.length < 100){
-        //         typingSpeed = 10;
-        //     }
-        //     else if (txt.length >= 100){
-        //         typingSpeed = 5;
-        //     }
-        //     console.log(res);
-        //     // const areaText = res[1];
-        //     let i = 0;
-        //     const timerId = setInterval(() => {
-        //     actionText.innerHTML += txt.charAt(i);
-        //     i++;
-        //     if (i === txt.length) {
-        //     clearInterval(timerId);
-        //     // typingSFX2.pause();
-        //     // typingSFX2.currentTime=0;
-        //     waiting = false;
-        //     }
-        //     },typingSpeed);
-        // }
         function setData2() {
             return [txt2, objText]
             };
@@ -377,7 +376,7 @@ function bedRoomState(){
          
             objText.innerHTML ='';
             // res is an array 
-            waiting = true;
+            waiting2 = true;
             typingSFX.play();
             const res =  setData2();
             const txt = res[0];
@@ -388,7 +387,7 @@ function bedRoomState(){
             else if (txt.length >= 100){
                 typingSpeed = 5;
             }
-            console.log(res);
+            // console.log(res);
             // const areaText = res[1];
             let i = 0;
             const timerId = setInterval(() => {
@@ -398,21 +397,22 @@ function bedRoomState(){
             clearInterval(timerId);
             typingSFX.pause();
             typingSFX.currentTime=0;
-            waiting = false;
+            waiting2 = false;
+   
             }
             },typingSpeed);
         }
-
+// **************************** 3
         function setData3() {
-        return [actionTxt, actionText]
+        return [dialogueTxt, dialogueText]
         };
 
         function typeText3() {
         let typingSpeed =0;
      
-        actionText.innerHTML ='';
+        dialogueText.innerHTML ='';
         // res is an array 
-        waiting = true;
+        waiting3 = true;
         typingSFX2.play();
         const res =  setData3();
         const txt = res[0];
@@ -427,13 +427,51 @@ function bedRoomState(){
         // const areaText = res[1];
         let i = 0;
         const timerId = setInterval(() => {
+        dialogueText.innerHTML += txt.charAt(i);
+        i++;
+        if (i === txt.length) {
+        clearInterval(timerId);
+        typingSFX2.pause();
+        typingSFX2.currentTime=0;
+        waiting3 = false;
+        typeText4();
+        }
+        },typingSpeed);
+    }
+
+// **************************** 3
+
+    function setData4() {
+        return [actionTxt, actionText]
+        };
+
+        function typeText4() {
+        let typingSpeed =0;
+     
+        actionText.innerHTML ='';
+        // res is an array 
+        waiting4 = true;
+        typingSFX2.play();
+        const res =  setData4();
+        const txt = res[0];
+
+        if (txt.length < 100){
+            typingSpeed = 10;
+        }
+        else if (txt.length >= 100){
+            typingSpeed = 5;
+        }
+        // console.log(res);
+        // const areaText = res[1];
+        let i = 0;
+        const timerId = setInterval(() => {
         actionText.innerHTML += txt.charAt(i);
         i++;
         if (i === txt.length) {
         clearInterval(timerId);
         typingSFX2.pause();
         typingSFX2.currentTime=0;
-        waiting = false;
+        waiting4 = false;
         }
         },typingSpeed);
     }
