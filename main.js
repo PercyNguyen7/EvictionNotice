@@ -379,10 +379,6 @@ function bedRoomState(){
          }
         },typingSpeed);}
 
-        
-
-
-
         function setData2() {
             return [txt2, objText]
             };
