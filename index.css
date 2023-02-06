@@ -39,7 +39,12 @@ body{
 #dialogue-text{
      background-color: rgba(0, 255, 0, 0.1);
 }
-
+#surprise-text{
+    /* background-color: rgba(255, 0, 0, 0.411); */
+}
+#action-text{
+    margin-top: 1rem;
+}
 #screen{
     margin: 2rem 0;
 }
