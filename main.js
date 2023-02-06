@@ -21,7 +21,7 @@ const actionText = document.getElementById('action-text');
 typingSFX.volume =0.6;
 typingSFX2.volume =0.4;
 
-let currentArea = 'Kitchen';
+let currentArea = 'LivingRoom';
 // let currentArea = 'Entrance';
 let paused = false;
 
@@ -55,6 +55,8 @@ let faucetTxt = ` `;
 let tvOff = true;
 
 let specialDialogue = false;
+let response =0;
+let finalChat = false;
 
 let dialogueSpeed =50;
 // to prevent Action Txt to play after
@@ -103,10 +105,10 @@ function submitInput() {
 
 function entranceSetting(){
     txt = `In front of you lies Mary Gray's apartment. You're here to evict the tenant. Apartment 704. Female. Born in 1956.`;
-    txt2=' ';
+    txt2=` `;
     currentArea = 'Entrance';
+    actionTxt =` `;
     typeText();
-    actionTxt =``;
 }
 function foyerSetting(){
     txt = `You step foot into the foyer. It reeks of mold and mildew. Not numbing, but enough to sends chills down your spine. To your left is a kitchen, and to your right is the living room. Down the hallway is a door to what you suspect a bedroom.`;
@@ -156,8 +158,8 @@ function livingRoomSetting(){
             actionTxt =` `;
 }
 function bedRoomSetting(){
-    txt =`You step foot in the bedroom. The morning light shines through the window, onto the random antiques and plants. Behind you is the foyer`;
-    txt2='';
+    txt =`You step foot in the bedroom. The morning light shines through the window, onto the random antiques and plants. The foyer is right behind.`;
+    txt2=` `;
     if (!notebookTaken){
         txt2+=`On the wooden desk lays an open notebook. `;
     }
@@ -296,7 +298,33 @@ function kitchenState(){
     console.log(firstTwoWords);
     resetDialogue();
     // if (currentArea === 'area'){
+   // dialogueSpeed = 10;
+   if (response === 1 ){
+    response=2;
+    dialogueOn= true;
+    dialogueTxt = `Charles and I, we've been through thick and thin... he loves me and I love him`;
+    actionTxt = `You don't quite know what to say. Though you did come here with a mission... Now EVICT MARY or BACK OFF and leave through the entrance.`;
+    typeText3();
+}
 
+else if (response ===2 && firstTwoWords === `evict mary`){
+    response=3;
+    dialogueOn= true;
+    dialogueTxt = `I'm sorry for the trouble.`;
+    actionTxt = `Mary ran in her bedroom and came back after a bit. In her hands are 20$ bills, some loose changes and old jewelry. "This is all I have for the moment...Please spare me for a few days and I will be gone by next week."`;
+    typeText3();
+}
+else if (response ===2 && firstTwoWords === `back off`){
+    response=3;
+    dialogueOn= true;
+    dialogueTxt = `I'm so sorry for the trouble...`;
+    actionTxt = `Pretending to be her concerned neighbor, you excused yourself and make your way to the exit...`;
+    typeText3();
+}
+else if (response ===2 && firstTwoWords != `evict mary` || response ===2 && firstTwoWords != `back off`){
+    actionTxt = `You don't quite know what to say. Though you did come here with a mission... Now EVICT MARY or BACK OFF and leave through the entrance.`;
+}
+else if (response ===0 || response ===3){
        if (firstWord==='west'|| firstWord=== 'w'){
             foyerSetting();
         }  else if (firstWord ==='north' || firstWord === 'n'|| firstWord ==='east' || firstWord === 'e' || firstWord ==='south' || firstWord === 's'){
@@ -364,17 +392,18 @@ function kitchenState(){
         //picture, bottle, notebook, note, mails
         else if(giftOrder ===4){
             surpriseTxt=`CHARLES`;
-            
-            // dialogueSpeed = 10;
-
+        
+      
+                // Now EVICT MARY or leave through the entrance.
             if (firstWord ===`give` && finalInput.includes('picture') && finalInput.includes('mary') && pictureTaken)  {
+            
                 specialDialogue = true;
                 resetActionTxt();
                 pictureGiven = true;
                 dialogueOn = true;
-                dialogueTxt = `This is our wedding photo. `;
-                dialogueTxt += `You're not`;
-                actionTxt = `You broke the woman's heart`;
+                dialogueTxt = `This is my wedding photo. Charles is a sweetheart... `;
+                dialogueTxt += `But you're not`;
+                actionTxt = `You broke the woman's heart. `;
                 typeText3();
             } else if (firstWord ===`give` && finalInput.includes('bottle') && finalInput.includes('mary') && bottleTaken)  {
                 specialDialogue = true;
@@ -383,7 +412,7 @@ function kitchenState(){
                 dialogueOn = true;
                 dialogueTxt = `This is my Alzheimer pills. Charles always reminded me...But. `;
                 dialogueTxt += `But you're not... `;
-                actionTxt = `You broke the woman's heart`;
+                actionTxt = `You broke the woman's heart.`;
                 typeText3();
             } else if (firstWord ===`give` && finalInput.includes('notebook') && finalInput.includes('mary') && notebookTaken)  {
                 specialDialogue = true;
@@ -392,7 +421,7 @@ function kitchenState(){
                dialogueOn = true;
                dialogueTxt = `This last bit... But Charles already passed away... Who are you?`;
                dialogueTxt += `You're not `;
-               actionTxt = `You broke the woman's heart`;
+               actionTxt = `You broke the woman's heart.`;
                typeText3();
            } else if (firstWord ===`give` && finalInput.includes('note') && finalInput.includes('mary') && noteTaken)  {
             specialDialogue = true;
@@ -401,7 +430,7 @@ function kitchenState(){
                 dialogueOn = true;
                 dialogueTxt = `This is Charles' love note for me...`;
                 dialogueTxt += `You're not Charles. `;
-                actionTxt = `You broke the woman's heart`;
+                actionTxt = `You broke the woman's heart.`;
                 typeText3();
             } else if (firstWord ===`give` && finalInput.includes('mails') && finalInput.includes('mary') && mailsTaken)  {
                 specialDialogue = true;
@@ -410,9 +439,12 @@ function kitchenState(){
                 dialogueOn = true;
                 dialogueTxt = `But Charles didn't `;
                 dialogueTxt += `You're not Charles. `;
-                actionTxt = `You broke the woman's heart`;
+                actionTxt = `You broke the woman's heart.`;
                 typeText3();
             } 
+            // else if (firstTwoWords === `evict mary` && ){
+
+            // }
             else if (
                 firstWord ===`give`&& finalInput.includes('mary') && !finalInput.includes(`picture`)
                 || firstWord ===`give`&& finalInput.includes('mary') && !finalInput.includes(`pills`)
@@ -426,6 +458,7 @@ function kitchenState(){
                 actionTxt =`Unrecognized command ` + `"${input}"`;
 
             }
+        
         }
         else if (
             firstWord ===`give`&& finalInput.includes('mary') && !finalInput.includes(`picture`)
@@ -441,7 +474,7 @@ function kitchenState(){
         }
         // GIVIN PIC, PILL, PHOTO,
    
-        
+    }
         // else {
         //     actionTxt =`Unrecognized command ` + `'${input}'`;
         //     console.log('.');
@@ -451,6 +484,7 @@ function kitchenState(){
         if (!dialogueOn){
             typeText4();
         }
+        
 }
 //  **************** LIVING ROOM **********************
 function livingRoomState(){
@@ -665,11 +699,10 @@ function bedRoomState(){
         function typeText5() {  
             // console.log('txt5');
         typingDialogueSFX.loop = true;
-   
+            typingDialogueSFX.play();
         surpriseText.innerHTML ='';
         // res is an array 
-     
-
+    
         const res =  setData5();
         const txt = res[0];
         // if (txt.length < 100){
@@ -692,15 +725,17 @@ function bedRoomState(){
                 }
                 if (i === txt.length) {
                 clearInterval(timerId);
-                specialDialogue = false;
+                specialDialogue = false; 
         
                 typingDialogueSFX.pause();
                 typingDialogueSFX.currentTime=0;
-                typingDialogueSFX.playbackRate=0.6;
-                setTimeout(typeText4,3000);
+                typingDialogueSFX.playbackRate=1;
+                setTimeout(typeText4,2000);
                 dialogueOn = false;
+                response++;
                 }
             }
+            console.log(response);
         },200); 
         // dialogueSpeed = 5;
     }
@@ -708,6 +743,7 @@ function bedRoomState(){
 
 
     function resetDialogue() {
+    
         dialogueText.innerHTML =``;
         surpriseText.innerHTML = ``;
     }
@@ -755,12 +791,21 @@ function bedRoomState(){
             typingSFX2.pause();
             typingSFX2.currentTime=0;
             waiting4 = false;
+               
         }
     }
         },typingSpeed);
     }
 
-    // typingSFX2.addEventListener('ended', function() {
+        function pauseInterval(){
+            paused =true;
+            setTimeout(resumeInterval,0);
+        }
+         function resumeInterval(){
+             paused =false;
+        }
+
+           // typingSFX2.addEventListener('ended', function() {
     //     this.currentTime = 0;
     //     this.play();
     // }, false);
@@ -781,11 +826,3 @@ function bedRoomState(){
         // if (i === txt.length) {clearInterval(timerId);}
         // },50);
         // }
-
-        function pauseInterval(){
-            paused =true;
-            setTimeout(resumeInterval,0);
-        }
-         function resumeInterval(){
-             paused =false;
-        }
