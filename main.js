@@ -521,11 +521,11 @@ function livingRoomState(){
        if (firstWord==='east'|| firstWord=== 'e'){
            foyerSetting();
         } 
-        else if (firstTwoWords ==`close` && finalInput.includes(`tv`) && !tvOff){
-            actionTxt =`You turn off the TV. You're not paid enough to deal with this headache... `;
+        else if (firstWord ==`close` && finalInput.includes(`tv`) && !tvOff){
+            actionTxt =`You turned off the TV. You're not paid enough to deal with this headache... `;
             tvOff = true;
         }
-        else if (firstTwoWords ==`close` && finalInput.includes(`tv`) && tvOff){
+        else if (firstWord ==`close` && finalInput.includes(`tv`) && tvOff){
             actionTxt =`The TV is already turned off`;
             tvOff = true;
         }
@@ -551,9 +551,9 @@ function livingRoomState(){
             actionTxt =`Unrecognized command ` + `'`+input+`'`;
         }
         // if dialogue is not on, play Action/Feedback Text
-        // if (!dialogueOn){
-        //     typeText4();
-        // }
+        if (!dialogueOn){
+            typeText4();
+        }
     // }
 }
 //  **************** BEDROOM **********************
@@ -565,25 +565,23 @@ function bedRoomState(){
     // if (currentArea === 'area'){
        if (firstWord==='south'|| firstWord=== 's'){
            foyerSetting();
-        } else if (firstWord ==='look' && finalInput.includes('diary') && metMary && !diaryTaken){
-            actionTxt =`March 2: I pray to the lord every day. Charles’ a sweetheart and a good soul.
+        } else if (firstWord ==='look' && finalInput.includes('notebook') && metMary && !notebookTaken){
+            actionTxt =`Mary's personal notebook! March 2: I pray to the lord every day. Charles’ a sweetheart and a good soul.
             June: Oh how I hate this man. He keeps forgetting to take his meds. There are things you may forget, though for this you may not. Please Charles, I need you.
             Nov 16: Today he couldn’t finish half the steak, even though it’s his favorite. I don't know how much longer he has. Or how much longer I can hold on to hope.
             Dec 12: Just how could you. I never agreed to this. I never asked for this. I couldn't care less about the money. This wasn’t your decision to make.`;
             inventoryText.innerHTML += ` diary`;
-        }else if (firstWord ==='take' && finalInput.includes('diary') && metMary && !diaryTaken){
-            actionTxt =`You took the diary.`;
-            inventoryText.innerHTML += ` diary`;
+        }else if (firstWord ==='take' && finalInput.includes('notebook') && metMary && !notebookTaken){
+            actionTxt =`You took the notebook.`;
+            inventoryText.innerHTML += ` notebook`;
             mailsTaken = true;
-        } else if (firstWord ==='take' && finalInput.includes('diary') && !metMary && !diaryTaken){
-            actionTxt =`You have no reason to do so`;
-        } else if (firstWord ==='look' && finalInput.includes('diary') && metMary && !diaryTaken){
-            actionTxt =`A bottle of Alzheimer pills...`;
+        }  else if (firstWord ==='look' && finalInput.includes('notebook') && metMary && !notebookTaken){
+            actionTxt =`A bottle full of Alzheimer pill.`;
         }else if (firstWord ==='take' && finalInput.includes('bottle') && metMary && !bottleTaken){
             actionTxt =`You took the bottle.`;
             inventoryText.innerHTML += ` bottle`;
             mailsTaken = true;
-        } else if (firstWord ==='take' && finalInput.includes('diary') && !metMary && !diaryTaken){
+        } else if (firstWord ==='take' && finalInput.includes('notebook') && !metMary && !notebookTaken || firstWord ==='take' && finalInput.includes('bottle') && !metMary && !notebookTaken){
             actionTxt =`You have no reason to do so`;
         }
             else{
