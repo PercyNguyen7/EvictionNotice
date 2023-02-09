@@ -11,8 +11,21 @@
   font-family: 'RetroGaming',monospace;  
   font-weight: 200;
 }
+:root{
+    --clr-white: rgb(226, 226, 226);
+    --clr-grey-white: rgb(210,210,210);
+    --clr-black:rgb(14, 13, 29);
+
+  
+}
+
+.dark-mode{
+    --clr-white:rgb(30, 42, 79);
+    --clr-grey-white: rgb(26, 18, 62);
+    --clr-black:rgb(218, 218, 218);
+}
 body{
-    background-color: rgb(226, 226, 226);
+    background-color: var(--clr-white);
     margin: auto;
     display: flex;
     flex-direction: column;
@@ -37,10 +50,11 @@ body{
 
 }
 #dialogue-text{
-     background-color: rgba(0, 255, 0, 0.1);
+     background-color: rgba(203, 203, 203, 0.1);
 }
 #surprise-text{
-    /* background-color: rgba(255, 0, 0, 0.411); */
+    font-size:3rem;
+    background-color: rgba(29, 29, 29, 0.411);
 }
 #action-text{
     margin-top: 1rem;
@@ -48,17 +62,19 @@ body{
 #screen{
     margin: 2rem 0;
 }
-
+#inventory-text{
+    margin-top: 2rem;
+}
 p{
-    color: black;
+    color: var(--clr-black);
     font-size: 20px;
 }
 
 
 .inputBox{
     outline: none;
-    background-color: rgb(214, 214, 214);
-    color: black;
+    background-color:var(--clr-grey-white);
+    color: var(--clr-black);
     border: 0px solid rgba(255, 255, 255, 0.377);
     border-left: 2px solid rgb(31, 31, 31);
     width: clamp(10rem,40vw,20rem);

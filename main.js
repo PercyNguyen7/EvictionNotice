@@ -1,9 +1,12 @@
+const bodyEl = document.querySelector(`body`);
+
 const typingSFX = new Audio('assets/sounds/typingSFX.mp3');
 const typingSFX2 = new Audio('assets/sounds/typingSFX.mp3');
 const typingDialogueSFX = new Audio('assets/sounds/typingDialogueSFX.mp3')
 const doorbellBtnSFX = new Audio('assets/sounds/doorbellBtn.mp3');
 
 const doorKnockSFX = new Audio('assets/sounds/knockDoor.mp3');
+
 
 const westKW = ['west','go left'];
 const northKW = ['north','go in', 'enter'];
@@ -15,16 +18,18 @@ const objText = document.getElementById('text2');
 
 const dialogueText = document.getElementById('dialogue-text');
 const surpriseText = document.getElementById('surprise-text');
+const inventoryText = document.querySelector(`#inventory-text`);
 
 const actionText = document.getElementById('action-text');
 
 typingSFX.volume =0.6;
 typingSFX2.volume =0.4;
 
-let currentArea = 'LivingRoom';
+let currentArea = 'Entrance';
 // let currentArea = 'Entrance';
 let paused = false;
-
+let typingSpeed = 5;
+let pauseTime = 5;
 // to prevent players from giving input while 
 let waiting = false;
 let waiting2 = false;
@@ -32,8 +37,10 @@ let waiting3 = false;
 let waiting4 = false; 
 let waiting5 = false;
 
-let metMary = true;
-let yelledMary = true;
+let yelledMary = false;
+
+let metMary = false;
+let tvOff = false;
 
 // OBJECTS STATUS
 let mailsTaken = false;
@@ -48,11 +55,25 @@ let bottleGiven = false;
 let notebookGiven = false;
 let noteGiven = false;
 
+
+let bottleTxt = ' bottle';
+let pictureTxt = ` picture`;
+let mailsTxt = ' mails';
+let noteTxt = ` note`;
+let notebookTxt = ' notebook';
+
+// pictureTaken = true;
+// bottleTaken = true;
+// notebookTaken = true;
+// noteTaken = true;
+// mailsTaken = true;
+
 // On/Off items
 let faucetOff = false;
 let faucetTxt = ` `;
+let inventoryTxt = ``;
+let newInventoryTxt=``;
 
-let tvOff = true;
 
 let specialDialogue = false;
 let response =0;
@@ -64,7 +85,7 @@ let dialogueOn = false;
 
 let txt = `In front of you lies Mary Gray's apartment. You're here to evict the tenant. Apartment 704. Female. Born in 1956.`;
 let txt2 =`Strangely enough the front door is wide open. On your right is a doorbell.`;
-let dialogueTxt = ` `;
+let dialogueString = ` `;
 let surpriseTxt = `l`;
 // let actionTxt = ``;
 let actionTxt ='Type a command and Press Enter';
@@ -259,13 +280,15 @@ function foyerState(){
             actionTxt =`Electricity bills...Water bills.. and the Eviction Notice!... all unopened. Under these letters lies a 1 inch pile of medical bills. Again, unopened. `;
         }   else if (firstWord ==='look' && finalInput.includes('picture')|| firstWord ==='look' && finalInput.includes('print')){
             actionTxt =`Beautiful pictures of an old couple travelling the world. You spot wedding photos dated back in 2013. That was 10 years ago. Mary is seen grinning next to her supposedly husband. You couldn't help but smiling yourself... And here you thought marriage was off the table for 50 year olds.`;
-        }   else if (firstWord ==='take' && finalInput.includes('mail') && metMary){
-            actionTxt =`You take the stack of mails.`;
+        }   else if (firstWord ==='take' && finalInput.includes('mail') && metMary && !mailsTaken){
+            actionTxt =`You took the stack of mails.`;
+            inventoryText.innerHTML += ` mails`;
             mailsTaken = true;
-        }   else if (firstWord ==='take' && finalInput.includes('picture') && metMary){
-            actionTxt =`You take the wedding photo.`;
+        }   else if (firstWord ==='take' && finalInput.includes('picture') && metMary && !pictureTaken){
+            actionTxt =`You took the wedding photo.`;
+            inventoryText.innerHTML += ` photo`;
             pictureTaken = true;
-        }   else if (firstWord ==='take' && finalInput.includes('picture') && !metMary || firstWord ==='take' && finalInput.includes('mails') && !metMary){
+        }   else if (firstWord ==='take' && finalInput.includes('picture') && !metMary || firstWord ==='take' && finalInput.includes('mail') && !metMary){
             actionTxt =`You have no reason to do so.`;
         }
         else{
@@ -282,12 +305,8 @@ function foyerState(){
 }
 
 //  *****************  KITCHEN ************************
-giftOrder = 4;
-pictureTaken = true;
-bottleTaken = true;
-notebookTaken = true;
-noteTaken = true;
-mailsTaken = true;
+giftOrder = 0;
+
 
 function kitchenState(){
     console.log(`gift order:`+ giftOrder);
@@ -302,7 +321,7 @@ function kitchenState(){
    if (response === 1 ){
     response=2;
     dialogueOn= true;
-    dialogueTxt = `Charles and I, we've been through thick and thin... he loves me and I love him`;
+    dialogueString = `Charles and I, we've been through thick and thin... he loves me and I love him`;
     actionTxt = `You don't quite know what to say. Though you did come here with a mission... Now EVICT MARY or BACK OFF and leave through the entrance.`;
     typeText3();
 }
@@ -310,14 +329,14 @@ function kitchenState(){
 else if (response ===2 && firstTwoWords === `evict mary`){
     response=3;
     dialogueOn= true;
-    dialogueTxt = `I'm sorry for the trouble.`;
-    actionTxt = `Mary ran in her bedroom and came back after a bit. In her hands are 20$ bills, some loose changes and old jewelry. "This is all I have for the moment...Please spare me for a few days and I will be gone by next week."`;
+    dialogueString = `Mary: "I'm sorry for the trouble."`;
+    actionTxt = `Mary ran in her bedroom and came back to the kitchen. In her hands are 20$ bills, some loose changes and old jewelry.`;
     typeText3();
 }
 else if (response ===2 && firstTwoWords === `back off`){
     response=3;
     dialogueOn= true;
-    dialogueTxt = `I'm so sorry for the trouble...`;
+    dialogueString = `I'm so sorry for the trouble...`;
     actionTxt = `Pretending to be her concerned neighbor, you excused yourself and make your way to the exit...`;
     typeText3();
 }
@@ -340,6 +359,10 @@ else if (response ===0 || response ===3){
             actionTxt =`Now now... You're here to evict the tenant, not their food.`;
         } else if (firstWord ===`look` && finalInput.includes('note')){
             actionTxt = `“The salmon was spectacular. If only I knew sooner that I would be spoiled on my death bed. Love, C.”`;
+        }else if (firstWord ===`take` && finalInput.includes('note') && !noteTaken){
+            actionTxt = `You took the note.`;
+            inventoryText.innerHTML += ` note`;
+            noteTaken = true;
         } else if (firstWord ===`look` && finalInput.includes('cake')){
             actionTxt = `“Just another slice of cake.”`;
         }   
@@ -351,7 +374,7 @@ else if (response ===0 || response ===3){
             giftOrder++;
             pictureGiven = true;            
             dialogueOn = true;
-            dialogueTxt = `This is... our wedding photo! Sometimes in the 80s... Aren't you a handsome young man? We don't even look like half of what we used to, but I couldn't be happier that I got to live my life with you.`;
+            dialogueString = `Mary: "This is... our wedding photo! Sometimes in the 80s... Aren't you a handsome young man? We don't even look like half of what we used to, but I couldn't be happier that I got to live my life with you.`;
             actionTxt = `She remembered the wedding.. remind her of the memories with the real Charles`;
             typeText3();
         } else if (firstWord ===`give` && finalInput.includes('bottle') && finalInput.includes('mary') && bottleTaken && giftOrder<=3)  {
@@ -359,7 +382,7 @@ else if (response ===0 || response ===3){
             giftOrder++;
             bottleGiven = true;            
             dialogueOn = true;
-            dialogueTxt = `Oh my pills...  Sometimes my mind goes blank but you're always there to remind me. I may have Alzheimer but I can always see the warmth that radiate from you, love!`;
+            dialogueString = `Mary: "Oh my pills...  Sometimes my mind goes blank but you're always there to remind me. I may have Alzheimer but I can always see the warmth that radiate from you, love!"`;
             actionTxt = `Hmm keep reminding her of real Charles, things seem to be working.`;
             typeText3();
         } else if (firstWord ===`give` && finalInput.includes('notebook') && finalInput.includes('mary') && notebookTaken && giftOrder<=3)  {
@@ -368,7 +391,7 @@ else if (response ===0 || response ===3){
             console.log('running')
             pillGiven = true;            
             dialogueOn = true;
-            dialogueTxt = `Hey noww...This is private! Oh.. that last bit I wrote? I..don't know either. I don't know what's gotten into me. It must have been thmeds or my Alzheimer...`;
+            dialogueString = `Mary: "Hey noww...This is private! Oh.. that last bit I wrote? I..don't know either. I don't know what's gotten into me. It must have been thmeds or my Alzheimer..."`;
             actionTxt = `She's still resisting the truth...let's bring her more memories`;
             typeText3();
         } else if (firstWord ===`give` && finalInput.includes('note') && finalInput.includes('mary') && noteTaken && giftOrder<=3)  {
@@ -376,7 +399,7 @@ else if (response ===0 || response ===3){
             giftOrder++;
             noteGiven = true;            
             dialogueOn = true;
-            dialogueTxt = `You've always loved my cooking so you slipped this under your food tray. Though my late memory fails from times to times, I still remember your grin when I asked about the note. Now shoo shoo off to bed you go. `;
+            dialogueString = `Mary: "You've always loved my cooking so you slipped this under your food tray. Though my late memory fails from times to times, I still remember your grin when I asked about the note. Now shoo shoo off to bed you go." `;
             actionTxt = `Not quite there yet... bring her more proof of Charles`;
             typeText3();
         }  else if (firstWord ===`give` && finalInput.includes('mails') && finalInput.includes('mary') && mailsTaken && giftOrder<=3)  {
@@ -384,7 +407,7 @@ else if (response ===0 || response ===3){
             giftOrder++;
             mailsGiven = true;            
             dialogueOn = true;
-            dialogueTxt = `Ohh but who cares about the bills... We'll find one way or another to get past it...`;
+            dialogueString = `Mary: "Ohh but who cares about the bills... We'll find one way or another to get past it..".`;
             actionTxt = `Not quite there yet... bring her more proof of Charles`;
             typeText3();
         } 
@@ -401,8 +424,8 @@ else if (response ===0 || response ===3){
                 resetActionTxt();
                 pictureGiven = true;
                 dialogueOn = true;
-                dialogueTxt = `This is my wedding photo. Charles is a sweetheart... `;
-                dialogueTxt += `But you're not`;
+                dialogueString = `This is my wedding photo. Charles is a sweetheart... `;
+                dialogueString += `But you're not... `;
                 actionTxt = `You broke the woman's heart. `;
                 typeText3();
             } else if (firstWord ===`give` && finalInput.includes('bottle') && finalInput.includes('mary') && bottleTaken)  {
@@ -410,8 +433,8 @@ else if (response ===0 || response ===3){
                  resetActionTxt();
                 bottleGiven = true;
                 dialogueOn = true;
-                dialogueTxt = `This is my Alzheimer pills. Charles always reminded me...But. `;
-                dialogueTxt += `But you're not... `;
+                dialogueString = `This is my Alzheimer pills. Charles always reminded me...But. `;
+                dialogueString += `But you're not... `;
                 actionTxt = `You broke the woman's heart.`;
                 typeText3();
             } else if (firstWord ===`give` && finalInput.includes('notebook') && finalInput.includes('mary') && notebookTaken)  {
@@ -419,8 +442,8 @@ else if (response ===0 || response ===3){
                 resetActionTxt();
                notebookGiven = true;
                dialogueOn = true;
-               dialogueTxt = `This last bit... But Charles already passed away... Who are you?`;
-               dialogueTxt += `You're not `;
+               dialogueString = `This last bit... But Charles already passed away... Who are you... `;
+               dialogueString += `But you're not... `;
                actionTxt = `You broke the woman's heart.`;
                typeText3();
            } else if (firstWord ===`give` && finalInput.includes('note') && finalInput.includes('mary') && noteTaken)  {
@@ -428,8 +451,8 @@ else if (response ===0 || response ===3){
                  resetActionTxt();
                 noteGiven = true;
                 dialogueOn = true;
-                dialogueTxt = `This is Charles' love note for me...`;
-                dialogueTxt += `You're not Charles. `;
+                dialogueString = `This is Charles' love note for me...`;
+                dialogueString += `But you're not... `;
                 actionTxt = `You broke the woman's heart.`;
                 typeText3();
             } else if (firstWord ===`give` && finalInput.includes('mails') && finalInput.includes('mary') && mailsTaken)  {
@@ -437,8 +460,8 @@ else if (response ===0 || response ===3){
                  resetActionTxt();
                 mailsGiven = true;
                 dialogueOn = true;
-                dialogueTxt = `But Charles didn't `;
-                dialogueTxt += `You're not Charles. `;
+                dialogueString = `But Charles didn't. `;
+                dialogueString += `But you're not... `;
                 actionTxt = `You broke the woman's heart.`;
                 typeText3();
             } 
@@ -515,8 +538,8 @@ function livingRoomState(){
             actionTxt= `You yelled at Mary but the soap drama TV overwhelms your voice.`;
         }
         else if (firstWord === 'yell' && finalInput.includes('mary') && tvOff || firstWord === 'talk' && finalInput.includes('mary') && tvOff){      
-            dialogueTxt=`"Charles...Is that you? But I thought I lost you for a second...Silly old me... Now now...Get back in bed love. I'll fix you up with your favorite dish the way you've always loved them... "`;
-            actionTxt= `Mary walked to the kittchen before you can explain yourself`;
+            dialogueString=`"Charles...Is that you? But I thought I lost you for a second...Silly old me... Now now...Get back in bed love. I'll fix you up with your favorite dish the way you've always loved them... "`;
+            actionTxt= `Mary walked to the kittchen before you can explain yourself.. Seems like she has mistaken you for Charles?`;
             dialogueOn = true;
             typeText3();
             metMary=true;
@@ -542,7 +565,28 @@ function bedRoomState(){
     // if (currentArea === 'area'){
        if (firstWord==='south'|| firstWord=== 's'){
            foyerSetting();
-        }  else{
+        } else if (firstWord ==='look' && finalInput.includes('diary') && metMary && !diaryTaken){
+            actionTxt =`March 2: I pray to the lord every day. Charles’ a sweetheart and a good soul.
+            June: Oh how I hate this man. He keeps forgetting to take his meds. There are things you may forget, though for this you may not. Please Charles, I need you.
+            Nov 16: Today he couldn’t finish half the steak, even though it’s his favorite. I don't know how much longer he has. Or how much longer I can hold on to hope.
+            Dec 12: Just how could you. I never agreed to this. I never asked for this. I couldn't care less about the money. This wasn’t your decision to make.`;
+            inventoryText.innerHTML += ` diary`;
+        }else if (firstWord ==='take' && finalInput.includes('diary') && metMary && !diaryTaken){
+            actionTxt =`You took the diary.`;
+            inventoryText.innerHTML += ` diary`;
+            mailsTaken = true;
+        } else if (firstWord ==='take' && finalInput.includes('diary') && !metMary && !diaryTaken){
+            actionTxt =`You have no reason to do so`;
+        } else if (firstWord ==='look' && finalInput.includes('diary') && metMary && !diaryTaken){
+            actionTxt =`A bottle of Alzheimer pills...`;
+        }else if (firstWord ==='take' && finalInput.includes('bottle') && metMary && !bottleTaken){
+            actionTxt =`You took the bottle.`;
+            inventoryText.innerHTML += ` bottle`;
+            mailsTaken = true;
+        } else if (firstWord ==='take' && finalInput.includes('diary') && !metMary && !diaryTaken){
+            actionTxt =`You have no reason to do so`;
+        }
+            else{
             actionTxt =`Unrecognized command ` + `'`+input+`'`;
         }
   typeText4();
@@ -557,7 +601,7 @@ function bedRoomState(){
         };
  
         function typeText() {
-        let typingSpeed =0;
+        // let typingSpeed =0;
  
       
         areaText.innerHTML ='';
@@ -603,7 +647,7 @@ function bedRoomState(){
             };
     
             function typeText2() {
-            let typingSpeed =0;
+            // let typingSpeed =0;
          
             objText.innerHTML ='';
             // res is an array 
@@ -640,7 +684,7 @@ function bedRoomState(){
 // **************************** 
 // Dialogue Text
         function setData3() {
-        return [dialogueTxt, dialogueText]
+        return [dialogueString, dialogueText]
         };
 
         function typeText3() {  
@@ -714,7 +758,7 @@ function bedRoomState(){
         console.log(res);
         // const areaText = res[1];
         let i = 0;
-       
+        bodyEl.classList.toggle('dark-mode');
         const timerId = setInterval(() => {
             if (!paused){
                 surpriseText.innerHTML += txt.charAt(i);
@@ -761,7 +805,7 @@ function bedRoomState(){
     function typeText4() {
         console.log('txt4');
         waiting3 = false;
-        let typingSpeed =10;
+        // let typingSpeed =10;
      
         actionText.innerHTML ='';
         // res is an array 
@@ -799,12 +843,74 @@ function bedRoomState(){
 
         function pauseInterval(){
             paused =true;
-            setTimeout(resumeInterval,0);
+            setTimeout(resumeInterval, pauseTime);
         }
          function resumeInterval(){
              paused =false;
         }
 
+        updateInventory();
+
+    
+    
+        
+        function updateInventory(){
+            let firstItem = true;
+       
+            console.log(bottleTaken, pictureTaken, mailsTaken, noteTaken, notebookTaken)
+            if (firstItem){
+
+            }
+
+            if (bottleTaken && !bottleGiven){
+            inventoryText.innerHTML += bottleTxt;
+            } 
+            else {
+                bottleTxt = ` `;
+            }
+            if (pictureTaken && !pictureGiven){
+            inventoryText.innerHTML += pictureTxt;
+            } 
+            else {
+                pictureTxt = ` `;
+            }
+            if (mailsTaken && !mailsGiven){
+            inventoryText.innerHTML += mailsTxt;
+            } 
+            else {
+                mailsTxt = ` `;
+            }
+            if (noteTaken && !noteGiven){
+            inventoryText.innerHTML += noteTxt;
+            } 
+            else {
+                noteTxt = ` `;
+            }
+            if (notebookTaken && !notebookGiven){
+            inventoryText.innerHTML += notebookTxt;
+            }
+            else {
+                notebookTxt = ` `;
+            }
+            console.log(inventoryTxt);
+            // newInventoryTxt = inventoryTxt.replace(`bottle`,'');
+
+
+
+            // if (!bottleGiven){
+            // newInventoryTxt = inventoryTxt.replace(`bottle`,'dad');}
+            // if (notebookGiven){
+            // inventoryTxt = inventoryTxt.replace(`notebook`,'sad');}
+            // if (noteGiven){
+            // newInventoryTxt = inventoryTxt.replace(`note`,'');}
+            // if (mailsGiven){
+            // newInventoryTxt = inventoryTxt.replace(`mails`,'');}
+            // if (pictureGiven){
+            // newInventoryTxt = inventoryTxt.replace(`picture`,'');}
+
+            console.log(newInventoryTxt);
+            // inventoryText.innerHTML = inventoryTxt;
+        }
            // typingSFX2.addEventListener('ended', function() {
     //     this.currentTime = 0;
     //     this.play();
