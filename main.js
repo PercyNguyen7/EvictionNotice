@@ -68,16 +68,16 @@ let mailsTxt = ' ';
 let diaryTxt = ' ';
 let giftOrder = 0;
 //                                  cheatcodes
-// yelledMary = true;
-// metMary = true;
-// tvOff = true;
+yelledMary = true;
+metMary = true;
+tvOff = true;
 
-// pictureTaken = true;
-// pillsTaken = true;
-// diaryTaken = true;
-// // noteTaken = true;
-// mailsTaken = true;
-// let giftOrder = 3;
+pictureTaken = true;
+pillsTaken = true;
+diaryTaken = true;
+// noteTaken = true;
+mailsTaken = true;
+giftOrder = 3;
 
 
 // On/Off items
@@ -443,6 +443,7 @@ else if (response ===0 || response ===4){
             dialogueString = `Mary: "This is... our wedding picture! Sometimes in the 80s... Aren't you a handsome young man? We don't even look like half of what we used to, but I couldn't be happier that I got to live my life with you.`;
             actionTxt = `She remembered the wedding.. remind her of the memories with the real Charles`;
             typeText3();
+              updateInventory();
         } else if (firstWord ===`give` && finalInput.includes('pill') && finalInput.includes('mary') && pillsTaken && giftOrder<=2 && !pillsGiven)  {
       resetActionTxt();
             giftOrder++;
@@ -451,6 +452,7 @@ else if (response ===0 || response ===4){
             dialogueString = `Mary: "Oh my pills...  Sometimes my mind goes blank but you're always there to remind me. I may have Alzheimer but I can always see the warmth that radiate from you, love!"`;
             actionTxt = `Hmm keep reminding her of real Charles, things seem to be working.`;
             typeText3();
+              updateInventory();
         } else if (firstWord ===`give` && finalInput.includes('diary') && finalInput.includes('mary') && diaryTaken && giftOrder<=2 && !diaryGiven)  {
             resetActionTxt();
             giftOrder++;
@@ -460,6 +462,7 @@ else if (response ===0 || response ===4){
             dialogueString = `Mary: "Hey noww...This is private! Oh.. that last bit I wrote? I..don't know either. I don't know what's gotten into me. It must have been thmeds or my Alzheimer..."`;
             actionTxt = `She's still resisting the truth...let's bring her more memories`;
             typeText3();
+              updateInventory();
         }
         //  else if (firstWord ===`give` && finalInput.includes('note') && finalInput.includes('mary') && noteTaken && giftOrder<=2)  {
         //     resetActionTxt();
@@ -479,6 +482,7 @@ else if (response ===0 || response ===4){
             dialogueString = `Mary: "Ohh but who cares about the bills... We'll find one way or another to get past it..".`;
             actionTxt = `Not quite there yet... bring her more proof of Charles`;
             typeText3();
+              updateInventory();
         } 
         
         //picture, pill, diary, note, mails
@@ -932,14 +936,26 @@ function bedRoomState(){
             if( mailsTaken && !mailsGiven){
                 mailsTxt = ` mails`;
             }
+            else{
+                mailsTxt = ``;
+            }
             if (pictureTaken && !pictureGiven){
                 pictureTxt = `picture`
+            }
+            else{
+                pictureTxt = ``;
             }
             if (diaryTaken && !diaryGiven){
                 diaryTxt = `diary`;
             }
+            else{
+                diaryTxt = ``;
+            }
             if (pillsTaken && !pillsGiven ){
                 pillsTxt = `pills`;
+            }
+            else{
+                pillsTxt = ``;
             }
             
             console.log('sad')
