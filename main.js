@@ -105,16 +105,16 @@ let mailsTxt = ' ';
 let diaryTxt = ' ';
 let giftOrder = 0;
 //                                  cheatcodes
-// yelledMary = true;
-// metMary = true;
-// // tvOff = true;
+yelledMary = true;
+metMary = true;
+// tvOff = true;
 
-// pictureTaken = true;
-// pillsTaken = true;
-// diaryTaken = true;
-// noteTaken = true;
-// mailsTaken = true;
-// // giftOrder = 3;
+pictureTaken = true;
+pillsTaken = true;
+diaryTaken = true;
+noteTaken = true;
+mailsTaken = true;
+// giftOrder = 3;
 
 
 // On/Off items
@@ -216,6 +216,8 @@ function foyerSetting(){
         }
         prevLivingRoom = false;
     }
+    choppingSFX.pause();
+    boilingSFX.pause();
   
         fridgeSFX.pause();
         drippingSFX.pause();
@@ -241,6 +243,11 @@ function kitchenSetting(){
         drippingSFX.play();
     }
     fridgeSFX.play();
+
+    if (metMary){
+        boilingSFX.play();
+        choppingSFX.play();
+    }
     // if(!tvOff){
     //     if (tvAudioLeft.paused ){
     //         tvAudioLeft.play();
@@ -253,7 +260,7 @@ function kitchenSetting(){
      faucetTxt = ``;
     }
     if (metMary){
-        maryTxt = `Mary is occupying herself in the kitchen.`;
+        maryTxt = `Mary is occupying herself in the kitchen. She's chopping celery and making some sort of soup.`;
     }
     else{
         maryTxt = ``;
@@ -585,6 +592,8 @@ else if (response ===0 || response ===4){
         // GIVING ACTIONS 
         // pictures, pill. diary, note, mails
         else if (firstWord ===`give` && finalInput.includes('picture') && finalInput.includes('mary') && pictureTaken && giftOrder<=2 && !pictureGiven)  {
+              choppingSFX.pause();
+           
       resetActionTxt();
             giftOrder++;
             pictureGiven = true;            
@@ -594,6 +603,8 @@ else if (response ===0 || response ===4){
             typeText3();
               updateInventory();
         } else if (firstWord ===`give` && finalInput.includes('pill') && finalInput.includes('mary') && pillsTaken && giftOrder<=2 && !pillsGiven)  {
+              choppingSFX.pause();
+           
       resetActionTxt();
             giftOrder++;
             pillsGiven = true;            
@@ -603,6 +614,8 @@ else if (response ===0 || response ===4){
             typeText3();
               updateInventory();
         } else if (firstWord ===`give` && finalInput.includes('diary') && finalInput.includes('mary') && diaryTaken && giftOrder<=2 && !diaryGiven)  {
+              choppingSFX.pause();
+           
             resetActionTxt();
             giftOrder++;
             console.log('running')
@@ -628,11 +641,13 @@ else if (response ===0 || response ===4){
         // }  
         
         else if (firstWord ===`give` && finalInput.includes('mail') && finalInput.includes('mary') && mailsTaken && giftOrder<=2 && !mailsGiven)   {
+              choppingSFX.pause();
+           
             resetActionTxt();
             giftOrder++;
             mailsGiven = true;            
             dialogueOn = true;
-            dialogueString = `Mary: "Stop. You have cancer, and we're finding you the best treatment we could! We've discussed this many time - Your HEALTH is the focus, not the money. Ohh but who cares about the bills...  We'll find one way or another to get past it... "`;
+            dialogueString = `Mary: "Stop. You're sick, and we're finding you the best treatment we could. We've discussed this many time - Your HEALTH is the focus, not the money. Ohh but who cares about the bills...  We'll find one way or another to get past it... "`;
             actionTxt = `Charles had cancer? She doesn't seem to remember just yet, bring her more proofs of Charles`;
             if (!pillsGiven){
                 actionTxt +=` and her dementia.`
@@ -644,7 +659,8 @@ else if (response ===0 || response ===4){
         //picture, pill, diary, note, mails
         else if(giftOrder ===3){
             surpriseTxt=`CHARLES`;
-        
+            choppingSFX.pause();
+            boilingSFX.pause();
       
                 // Now EVICT MARY or leave through the entrance.
             if (firstWord ===`give` && finalInput.includes('picture') && finalInput.includes('mary') && pictureTaken && !pictureGiven)  {
