@@ -1,12 +1,15 @@
 const bodyEl = document.querySelector(`body`);
-
 const typingSFX = new Audio('assets/sounds/typingSFX.mp3');
 const typingSFX2 = new Audio('assets/sounds/typingSFX.mp3');
 const typingDialogueSFX = new Audio('assets/sounds/typingDialogueSFX.mp3')
 const doorbellBtnSFX = new Audio('assets/sounds/doorbellBtn.mp3');
-
+const rainSFX = new Audio(`assets/sounds/rain.mp3`);
+const drippingSFX = new Audio(`assets/sounds/dripping.mp3`);
+const fridgeSFX = new Audio(`assets/sounds/fridge.mp3`);
 const doorKnockSFX = new Audio('assets/sounds/knockDoor.mp3');
-
+const footstepSFX = new Audio('assets/sounds/footstepSound.mp3');
+const choppingSFX = new Audio('assets/sounds/chopping.mp3');
+const boilingSFX = new Audio(`assets/sounds/boiling.mp3`);
 
 const westKW = ['west','left'];
 const northKW = ['north','forwards'];
@@ -14,7 +17,7 @@ const southKW = ['south','back'];
 const eastKW = ['east','right'];
 
 const ringDoorbellKW = [`ring`, `press`];
-
+const pictureKW = [`photo`,`picture`,`frame`];
 
 const userInput = document.getElementById('userInput');
 const areaText = document.getElementById('text1');
@@ -26,14 +29,48 @@ const inventoryText = document.querySelector(`#inventory-text`);
 
 const actionText = document.getElementById('action-text');
 
-typingSFX.volume =0.6;
-typingSFX2.volume =0.4;
+const tvAudioLeft = new Audio(`assets/sounds/tvAudioLChannel.mp3`);
+const tvAudio = new Audio(`assets/sounds/tvAudio.mp3`);
+
+typingSFX.volume =0.8;
+typingSFX2.volume =0.6;
+
+tvAudioLeft.loop = true;
+tvAudioLeft.volume = 0.1;
+
+tvAudio.volume = 0.6;
+tvAudio.loop = true;
+
+choppingSFX.loop=true;
+boilingSFX.loop=true;
+
+drippingSFX.loop = true;
+drippingSFX.volume = 0.5;
+
+fridgeSFX.loop = true;
+
+fridgeSFX.volume = 0.25;
+
+rainSFX.loop = true;
+rainSFX.volume = 1;
+
+
+
+let tvHeard = true;
+let prevLivingRoom = false;
 
 let currentArea = 'Entrance';
 // let currentArea = 'Entrance';
 let paused = false;
-let typingSpeed = 0;
-let pauseTime = 0;
+
+// SPEED
+let typingSpeed = 10;
+let pauseTime = 200;
+let dialogueSpeed =10;
+let specialDialogueSpeed = 400;
+let specialPause = 3000;
+let pauseDuration = 500;
+
 // to prevent players from giving input while 
 let waiting = false;
 let waiting2 = false;
@@ -68,16 +105,16 @@ let mailsTxt = ' ';
 let diaryTxt = ' ';
 let giftOrder = 0;
 //                                  cheatcodes
-yelledMary = true;
-metMary = true;
-tvOff = true;
+// yelledMary = true;
+// metMary = true;
+// // tvOff = true;
 
-pictureTaken = true;
-pillsTaken = true;
-diaryTaken = true;
+// pictureTaken = true;
+// pillsTaken = true;
+// diaryTaken = true;
 // noteTaken = true;
-mailsTaken = true;
-giftOrder = 3;
+// mailsTaken = true;
+// // giftOrder = 3;
 
 
 // On/Off items
@@ -88,10 +125,11 @@ let newInventoryTxt=``;
 
 
 let specialDialogue = false;
+// to see count after special dialogue
 let response =0;
 let finalChat = false;
 
-let dialogueSpeed =10;
+
 // to prevent Action Txt to play after
 let dialogueOn = false;
 
@@ -100,7 +138,7 @@ let txt2 =`Strangely enough the front door is wide open. On your right is a door
 let dialogueString = ` `;
 let surpriseTxt = `l`;
 // let actionTxt = ``;
-let actionTxt ='Type a command and Press Enter';
+let actionTxt ='Direction Commands: NORTH (N), SOUTH (S), WEST (W), EAST (E). These are the basic commands to navigate through the game. The remaining commands are for you to figure out! Type a command and Press Enter';
 
 typeText();
 typeText4();
@@ -142,14 +180,46 @@ function submitInput() {
 }
 
 function entranceSetting(){
+    footstepSFX.currentTime=0;
+    footstepSFX.play();
     txt = `In front of you lies Mary Gray's apartment. You're here to evict the tenant. Apartment 704. Female. Born in 1956.`;
     txt2=` `;
     currentArea = 'Entrance';
     actionTxt =` `;
     typeText();
 }
+
+console.log(tvAudioLeft.currentTime);
 function foyerSetting(){
-    txt = `You step foot into the foyer. It reeks of mold and mildew. Not numbing, but enough to sends chills down your spine. To your left is a kitchen, and to your right is the living room. Down the hallway is a door to what you suspect a bedroom.`;
+    footstepSFX.currentTime=0;
+    footstepSFX.play();
+    // if tv on
+    
+    tvAudioLeft.volume =0.1;
+    if(!tvOff){
+        if (!tvAudio.paused){
+            tvAudio.pause();
+            }
+            // if 
+        if (tvAudio.currentTime >= 0 && prevLivingRoom === true){
+
+            tvAudioLeft.currentTime = tvAudio.currentTime;
+           
+            easeOutTvVol();
+        }
+        // else if (tvAudio.currentTime === 0 && prevLivingRoom === true) {
+        //     tvAudioLeft.currentTime =0;
+        // }
+        
+        if (tvAudioLeft.paused ){
+            tvAudioLeft.play();
+        }
+        prevLivingRoom = false;
+    }
+  
+        fridgeSFX.pause();
+        drippingSFX.pause();
+    txt = `You step foot into the foyer. It reeks of mold and mildew. Not numbing, but enough to sends chills down your spine. To the east is a kitchen, and to the west is the living room. Down the hallway to your north is a door to what you suspect a bedroom.`;
     txt2=` `;
         if (!mailsTaken){
                  txt2+=`Unopened mail enveloppes scatter on the ground.`;
@@ -162,7 +232,21 @@ function foyerSetting(){
             actionTxt =` `;
 }
 function kitchenSetting(){
-    txt = `You step foot in the kitchen. To your left is the foyer`;
+    footstepSFX.currentTime=0;
+    footstepSFX.play();
+
+    
+    tvAudioLeft.volume =0.02;
+    if (!faucetOff){
+        drippingSFX.play();
+    }
+    fridgeSFX.play();
+    // if(!tvOff){
+    //     if (tvAudioLeft.paused ){
+    //         tvAudioLeft.play();
+    //         }
+    // }
+    txt = `You step foot in the kitchen. To the east is the foyer`;
    if (!faucetOff){
     faucetTxt = `The faucet is dripping a small stream of water. `;
     } else {
@@ -174,13 +258,39 @@ function kitchenSetting(){
     else{
         maryTxt = ``;
     }
-            txt2=`${maryTxt}The fridge is humming rather loudly. ${faucetTxt}You see a slide of what seems like homemade cake laying on the table. `;
+            txt2=`${maryTxt}The fridge is humming rather loudly. ${faucetTxt}You see a slide of what seems like homemade cake laying on the table.`;
             currentArea = 'Kitchen';
             typeText();
             actionTxt =` `;
 }
 function livingRoomSetting(){
-    txt =`You step foot into the living room. Oddly enough it feels somewhat...homely. To your right is the foyer.`;
+    footstepSFX.currentTime=0;
+    footstepSFX.play(); 
+
+
+    prevLivingRoom = true;
+    if (!tvOff){
+        if (!tvAudioLeft.paused){
+        tvAudioLeft.pause();
+        }
+        if ( tvAudio.paused){
+            tvAudio.play();
+        }
+        // else {
+        //     tvAudio.play();
+        // }
+        // if audio left is more than 0, then equal
+        if (tvAudioLeft.currentTime > 0 ){
+            tvAudio.currentTime = tvAudioLeft.currentTime;
+        }
+        else {
+            tvAudio.currentTime =0;
+        }
+       
+            easeInTvVol();
+    }
+
+    txt =`You step foot into the living room. Oddly enough it feels somewhat...homely. To the east is the foyer.`;
             txt2=` `;
             if (!metMary){
                 txt2+=`Mary is fast asleep on her rocking chair.`;                
@@ -196,7 +306,17 @@ function livingRoomSetting(){
             actionTxt =` `;
 }
 function bedRoomSetting(){
-    txt =`You step foot in the bedroom. The morning light shines through the window, onto the random antiques and plants. The foyer is right behind.`;
+    footstepSFX.currentTime=0;
+    footstepSFX.play();
+
+    
+    tvAudioLeft.volume =0.02;
+    // if(!tvOff){
+    //     if (tvAudioLeft.paused ){
+    //         tvAudioLeft.play();
+    //     }
+    // }
+    txt =`You step foot in the bedroom. The morning light shines through the open windows onto the random antiques and plants. The foyer is right behind.`;
     txt2=` `;
     if (!diaryTaken){
         txt2+=`On the wooden desk lays an open diary. `;
@@ -209,7 +329,9 @@ function bedRoomSetting(){
     actionTxt =` `;
 }
 function entranceState(){
-  
+    if( rainSFX.paused){
+        rainSFX.play();
+    }
     const input = document.getElementById("userInput").value;
     const finalInput = input.toLowerCase();
     const firstWord = finalInput.split(" ")[0];
@@ -234,10 +356,13 @@ function entranceState(){
             foyerSetting();
         }
         else if (
-            enterKW.some(el=> finalInput.includes(el)) && !yelledMary ){
+            enterKW.some(el=> firstWord==el) && !yelledMary ){
+            console.log('damn')
             actionTxt =`You're well versed in the law. Even though entering an open door will be peaceful entry, it's good courtesy to let the tenant know before coming in.`;
         }
-        else if (firstWord ==='west' || firstWord === 'w'|| firstWord ==='east' || firstWord === 'e' || firstWord ==='south' || firstWord === 's'){
+        else if (
+            firstWord ==='west' || firstWord === 'w'|| firstWord ==='east' || firstWord === 'e' || firstWord ==='south' || firstWord === 's'
+            ){
             actionTxt =`You can't go that way.`;
         }
         else if (firstWord === 'look'){
@@ -262,10 +387,10 @@ function entranceState(){
         else if (firstWord==='look' && finalInput.includes('doorbelll') ){
             actionTxt =`Just an ordinary doorbell.`;
         }
-        else if (firstWord === 'ring' && !finalInput.includes('doorbell')){
-            actionTxt =`You can't use it.`;
+        else if (firstWord === 'ring' && !finalInput.includes('doorbell') || firstWord ===  'press' && !finalInput.includes('doorbell')){
+            actionTxt =`You can't press it.`;
         }
-        else if (firstWord === 'ring' && finalInput.includes('doorbell')){
+        else if (firstWord === 'ring' && finalInput.includes('doorbell') || firstWord === 'press' && finalInput.includes('doorbell')){
             actionTxt =`You ringed the doorbell. Not a single sound. Damn thing is broken. Perhaps you should try yelling.`;
             doorbellBtnSFX.play();
         }
@@ -355,7 +480,7 @@ function kitchenState(){
    if (response === 1 ){
     response=2;
     dialogueOn= true;
-    dialogueString = `Charles and I, we've been through thick and thin...we met in our 40 and felt in love. Things were fine until he was diagnosed with cancer 2 years ago. We were poor but I insisted on getting him chemo. We were in big debt but that's okay as long as he's still breathing with me. Little did I know, the damn fool stopped taking his meds. The debt was getting out of hand, so he just stopped taking them to speed up the process. I've always thought he was an honest man, even through tough times. Charles died 3 months ago.  I've never really been myself ever since.  `;
+    dialogueString = `Charles and I, we've been through thick and thin...we met in our forties and felt in love. Things were fine until he was diagnosed with cancer. We were poor but I insisted on getting him chemo. I truly did not mind the debt as long as he's still breathing with me. Little did I know, the damn fool stopped taking his meds. The debt was getting out of hand, so he just stopped taking them to speed up the process. I've always thought he was an honest man, even through tough times. Charles died 3 months ago.  I've never really been myself ever since.  `;
     actionTxt = `You don't quite know what to say... Though you did come here with a mission... Now EVICT MARY or BACK OFF and leave through the entrance.`;
     typeText3();
 }
@@ -379,9 +504,9 @@ else if (response ===3 && firstTwoWords === `evict anyway`){
 else if (response ===3 && firstTwoWords === `spare today`){
     dialogueOn= true;
     dialogueString = `Thank you.`;
-    actionTxt = `You came back tomorrow to see Mary's inanimate body and blood dripping from her wrist.`;
+    actionTxt = `You came back the next day to see the apartment empty, as promised. You wonder where she's at, but that is not your problem to deal with.`;
     typeText3();
-    response = `suicide ending`;
+    response = `mary left ending`;
 }
 // if back off BACK OFF ROUTE
 else if (response ===2 && firstTwoWords === `back off`){
@@ -410,7 +535,13 @@ else if (response ===0 || response ===4){
         }  else if (firstTwoWords ==='turn off' && finalInput.includes('faucet') && !faucetOff){
             actionTxt =`You closed the faucet. The drip stops dripping.`;
             faucetOff = true;
-        }  else if (firstTwoWords === 'turn off' && finalInput.includes('faucet') && faucetOff){
+
+            // turn off faucet
+            drippingSFX.pause();
+        }  else if (firstTwoWords ==='turn on' && finalInput.includes('faucet') && faucetOff){
+            actionTxt =`You have no reason to do so.`;
+            faucetOff = true;
+        } else if (firstTwoWords === 'turn off' && finalInput.includes('faucet') && faucetOff){
             actionTxt =`The faucet is already off.`;
         }  else if (firstWord ==='look' && finalInput.includes('fridge')){
             actionTxt =`Old model fridge… The brand name seems rather unfamiliar. You notice some dusty sticky notes taped on it.`;
@@ -426,12 +557,30 @@ else if (response ===0 || response ===4){
         // }
          else if (firstWord ===`look` && finalInput.includes('cake')){
             actionTxt = `Just another slice of cake.`;
-        }  else if (firstWord ===`talk` && finalInput.includes('mary')){
+        } else if (firstWord ===`eat` && finalInput.includes('cake')){
+            actionTxt = `You had to remind yourself that your mission here is to evict the tenant.`;
+        }  
+        else if (firstWord ===`talk` && finalInput.includes('mary')){
             dialogueOn = true;
             dialogueString = `Mary: Charles please get back to bed. If you behave I might add a sprinkle of beacon... The doctor doesn't have to know about this...`;
-            actionTxt = `Mary... still sees you as Charles? ... Try bringing her memorable items that will refresh her memory so she may be evicted.`;
+            actionTxt = `Mary... still sees you as Charles? ... Try bringing her memorable items that will refresh her memory so you may evict her.`;
             typeText3();
         }   
+        
+        // IF GIVE WITHOUT SPECIFYING MARY
+        else if (firstWord ===`give` && finalInput.includes('picture') && !finalInput.includes('mary') && pictureTaken && giftOrder<=2 && !pictureGiven){
+            actionTxt = `Give picture to who?`;
+        }  
+
+        else if (firstWord ===`give` && finalInput.includes('mail') && !finalInput.includes('mary') && mailsTaken && giftOrder<=2 && !mailsGiven){
+            actionTxt = `Give mails to who?`;
+        } 
+        else if (firstWord ===`give` && finalInput.includes('pills') && !finalInput.includes('mary') && pillsTaken && giftOrder<=2 && !pillsGiven){
+            actionTxt = `Give mails to who?`;
+        } 
+        else if (firstWord ===`give` && finalInput.includes('diary') && !finalInput.includes('mary') && diaryTaken && giftOrder<=2 && !diaryGiven){
+            actionTxt = `Give mails to who?`;
+        }
         
         // GIVING ACTIONS 
         // pictures, pill. diary, note, mails
@@ -459,8 +608,12 @@ else if (response ===0 || response ===4){
             console.log('running')
             diaryGiven = true;            
             dialogueOn = true;
-            dialogueString = `Mary: "Hey noww...This is private! Oh.. that last bit I wrote? I..don't know either. I don't know what's gotten into me. It must have been thmeds or my Alzheimer..."`;
-            actionTxt = `She's still resisting the truth...let's bring her more memories`;
+            dialogueString = `Mary: "Hey noww...This is private! Oh.. that last bit I wrote? I..don't know either. I don't know what's gotten into me. It must have been the meds or my Alzheimer... I mean I always had nightmare of you being taken away from my life. But those are silly dreams. I'm glad you're still here with me."`;
+   
+            actionTxt = `She doesnt believe her own writings...but you're sure she'll remind at some point. Bring her notable objects of her past`;
+            if (!pillsGiven){
+                actionTxt +=` and her dementia.`
+            }
             typeText3();
               updateInventory();
         }
@@ -474,13 +627,16 @@ else if (response ===0 || response ===4){
         //     typeText3();
         // }  
         
-        else if (firstWord ===`give` && finalInput.includes('mails') && finalInput.includes('mary') && mailsTaken && giftOrder<=2 && !mailsGiven)   {
+        else if (firstWord ===`give` && finalInput.includes('mail') && finalInput.includes('mary') && mailsTaken && giftOrder<=2 && !mailsGiven)   {
             resetActionTxt();
             giftOrder++;
             mailsGiven = true;            
             dialogueOn = true;
-            dialogueString = `Mary: "Ohh but who cares about the bills... We'll find one way or another to get past it..".`;
-            actionTxt = `Not quite there yet... bring her more proof of Charles`;
+            dialogueString = `Mary: "Stop. You have cancer, and we're finding you the best treatment we could! We've discussed this many time - Your HEALTH is the focus, not the money. Ohh but who cares about the bills...  We'll find one way or another to get past it... "`;
+            actionTxt = `Charles had cancer? She doesn't seem to remember just yet, bring her more proofs of Charles`;
+            if (!pillsGiven){
+                actionTxt +=` and her dementia.`
+            }
             typeText3();
               updateInventory();
         } 
@@ -530,7 +686,7 @@ else if (response ===0 || response ===4){
         //         actionTxt = `You broke the woman's heart.`;
         //         typeText3();
         //     } 
-            else if (firstWord ===`give` && finalInput.includes('mails') && finalInput.includes('mary') && mailsTaken && !mailsGiven)  {
+            else if (firstWord ===`give` && finalInput.includes('mail') && finalInput.includes('mary') && mailsTaken && !mailsGiven)  {
                 specialDialogue = true;
                  resetActionTxt();
                 mailsGiven = true;
@@ -600,6 +756,8 @@ function livingRoomState(){
         else if (firstTwoWords ==`turn off` && finalInput.includes(`tv`) && !tvOff){
             actionTxt =`You turned off the TV. You're not paid enough to deal with this headache... `;
             tvOff = true;
+            tvAudio.pause();
+            doorbellBtnSFX.play();
         }
         else if (firstTwoWords ==`turn off` && finalInput.includes(`tv`) && tvOff){
             actionTxt =`The TV is already turned off`;
@@ -674,6 +832,34 @@ function bedRoomState(){
 // function typeText(){
 //     areaText.innerHTML += txt;
 //  }
+
+function easeInTvVol(){
+    tvAudio.volume = tvAudioLeft.volume;
+    if (tvAudio.volume <=0.6){
+        increaseVol = setInterval(()=> {
+            tvAudio.volume+=0.05;
+            console.log('running');
+            if (tvAudio.volume > 0.6){
+                clearInterval(increaseVol);
+                console.log('clear');
+            }
+        }, 300);
+    }
+}
+function easeOutTvVol(){
+    tvAudioLeft.volume = tvAudio.volume;
+    if (tvAudioLeft.volume >= 0.1){
+        decreaseVol = setInterval(()=> {
+            tvAudioLeft.volume-= 0.05;
+            console.log('running');
+            if (tvAudioLeft.volume < 0.1){
+                clearInterval(decreaseVol);
+                console.log('clear');
+                
+            }
+        }, 300);
+    }
+}
         function setData() {
         return [txt, areaText]
         };
@@ -800,7 +986,7 @@ function bedRoomState(){
                 // typeText4();
              
                     if (!specialDialogue){
-                    setTimeout(typeText4,1000);
+                    setTimeout(typeText4,pauseDuration);
                     dialogueOn = false;}
                     
                     else if (specialDialogue) {
@@ -852,13 +1038,13 @@ function bedRoomState(){
                 typingDialogueSFX.pause();
                 typingDialogueSFX.currentTime=0;
                 typingDialogueSFX.playbackRate=1;
-                setTimeout(typeText4,2000);
+                setTimeout(typeText4,specialPause);
                 dialogueOn = false;
                 response++;
                 }
             }
             console.log(response);
-        },200); 
+        },specialDialogueSpeed); 
         // dialogueSpeed = 5;
     }
     // give mary picture
