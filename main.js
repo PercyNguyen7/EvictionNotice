@@ -113,16 +113,16 @@ let mailsTxt = ' ';
 let diaryTxt = ' ';
 let giftOrder = 0;
 //                                  cheatcodes
-yelledMary = true;
-metMary = true;
-tvOff = true;
+// yelledMary = true;
+// metMary = true;
+// tvOff = true;
 
-pictureTaken = true;
-pillsTaken = true;
-diaryTaken = true;
-noteTaken = true;
-mailsTaken = true;
-giftOrder = 3;
+// pictureTaken = true;
+// pillsTaken = true;
+// diaryTaken = true;
+// noteTaken = true;
+// mailsTaken = true;
+// giftOrder = 3;
 
 
 // On/Off items
