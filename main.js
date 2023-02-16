@@ -1,5 +1,6 @@
 const bodyEl = document.querySelector(`body`);
 const typingSFX = new Audio('assets/sounds/typingSFX.mp3');
+const takeItemSFX = new Audio(`assets/sounds/takeItem.mp3`);
 const typingSFX2 = new Audio('assets/sounds/typingSFX.mp3');
 const typingDialogueSFX = new Audio('assets/sounds/typingDialogueSFX.mp3')
 const doorbellBtnSFX = new Audio('assets/sounds/doorbellBtn.mp3');
@@ -10,6 +11,7 @@ const doorKnockSFX = new Audio('assets/sounds/knockDoor.mp3');
 const footstepSFX = new Audio('assets/sounds/footstepSound.mp3');
 const choppingSFX = new Audio('assets/sounds/chopping.mp3');
 const boilingSFX = new Audio(`assets/sounds/boiling.mp3`);
+const clockSFX = new Audio(`assets/sounds/clock.mp3`);
 
 const westKW = ['west','left'];
 const northKW = ['north','forwards'];
@@ -35,26 +37,36 @@ const tvAudio = new Audio(`assets/sounds/tvAudio.mp3`);
 typingSFX.volume =0.8;
 typingSFX2.volume =0.6;
 
+
+rainSFX.loop = true;
+//  ALL ROOM EXCEPT FOR ENTRANCE AND LIVINGROOM
 tvAudioLeft.loop = true;
 tvAudioLeft.volume = 0.1;
+
+// LIVING ROOM SOUND
+clockSFX.loop=true;
 
 tvAudio.volume = 0.6;
 tvAudio.loop = true;
 
+// KITCHEN SOUNDS
 choppingSFX.loop=true;
+choppingSFX.voume = 0.7;
 boilingSFX.loop=true;
+boilingSFX.volume =0.5;
+
 
 drippingSFX.loop = true;
 drippingSFX.volume = 0.5;
 
 fridgeSFX.loop = true;
-
 fridgeSFX.volume = 0.25;
 
-rainSFX.loop = true;
-rainSFX.volume = 1;
 
 
+
+
+let maryRealized = false;
 
 let tvHeard = true;
 let prevLivingRoom = false;
@@ -65,7 +77,7 @@ let paused = false;
 
 // SPEED
 let typingSpeed = 10;
-let pauseTime = 200;
+let pauseTime = 10;
 let dialogueSpeed =10;
 let specialDialogueSpeed = 400;
 let specialPause = 3000;
@@ -107,7 +119,7 @@ let giftOrder = 0;
 //                                  cheatcodes
 yelledMary = true;
 metMary = true;
-// tvOff = true;
+tvOff = true;
 
 pictureTaken = true;
 pillsTaken = true;
@@ -138,7 +150,7 @@ let txt2 =`Strangely enough the front door is wide open. On your right is a door
 let dialogueString = ` `;
 let surpriseTxt = `l`;
 // let actionTxt = ``;
-let actionTxt ='Direction Commands: NORTH (N), SOUTH (S), WEST (W), EAST (E). These are the basic commands to navigate through the game. The remaining commands are for you to figure out! Type a command and Press Enter';
+let actionTxt ='Commands: NORTH (N), SOUTH (S), WEST (W), EAST (E), INSTRUCTION (I). The remaining commands are for you to explore! Type a command and Press Enter';
 
 typeText();
 typeText4();
@@ -180,9 +192,15 @@ function submitInput() {
 }
 
 function entranceSetting(){
+
+    if(rainSFX.paused){
+        rainSFX.play();
+    }
+    rainSFX.volume = 1;
+
     footstepSFX.currentTime=0;
     footstepSFX.play();
-    txt = `In front of you lies Mary Gray's apartment. You're here to evict the tenant. Apartment 704. Female. Born in 1956.`;
+    txt = `In front of you lies Mary Gray's apartment. You're here to evict the tenant. To your north is the residence of the convicted. Female. Seventy years old.`;
     txt2=` `;
     currentArea = 'Entrance';
     actionTxt =` `;
@@ -191,6 +209,9 @@ function entranceSetting(){
 
 console.log(tvAudioLeft.currentTime);
 function foyerSetting(){
+    clockSFX.pause();
+    rainSFX.volume = 0.5;
+
     footstepSFX.currentTime=0;
     footstepSFX.play();
     // if tv on
@@ -234,6 +255,15 @@ function foyerSetting(){
             actionTxt =` `;
 }
 function kitchenSetting(){
+
+    if (metMary && !maryRealized){
+        if (boilingSFX.paused){
+            boilingSFX.play();
+        }
+        if (choppingSFX.paused){
+            choppingSFX.play();
+        }
+    }
     footstepSFX.currentTime=0;
     footstepSFX.play();
 
@@ -244,10 +274,7 @@ function kitchenSetting(){
     }
     fridgeSFX.play();
 
-    if (metMary){
-        boilingSFX.play();
-        choppingSFX.play();
-    }
+  
     // if(!tvOff){
     //     if (tvAudioLeft.paused ){
     //         tvAudioLeft.play();
@@ -271,6 +298,11 @@ function kitchenSetting(){
             actionTxt =` `;
 }
 function livingRoomSetting(){
+
+    if (clockSFX.paused){
+        clockSFX.play();
+    }
+    
     footstepSFX.currentTime=0;
     footstepSFX.play(); 
 
@@ -298,7 +330,7 @@ function livingRoomSetting(){
     }
 
     txt =`You step foot into the living room. Oddly enough it feels somewhat...homely. To the east is the foyer.`;
-            txt2=` `;
+            txt2=``;
             if (!metMary){
                 txt2+=`Mary is fast asleep on her rocking chair.`;                
             } 
@@ -308,6 +340,7 @@ function livingRoomSetting(){
             if (!tvOff){
                 txt2+=` The TV hung on the wall is deafening loud...Mary is old after all. You chuckle as this is exactly what your old pop did.`;                
             }
+            txt2 += ` The vintage clock on the wall is just ticking away.`
             currentArea = 'LivingRoom';
             typeText();
             actionTxt =` `;
@@ -316,20 +349,21 @@ function bedRoomSetting(){
     footstepSFX.currentTime=0;
     footstepSFX.play();
 
-    
+    rainSFX.volume = 1;
     tvAudioLeft.volume =0.02;
     // if(!tvOff){
     //     if (tvAudioLeft.paused ){
     //         tvAudioLeft.play();
     //     }
     // }
-    txt =`You step foot in the bedroom. The morning light shines through the open windows onto the random antiques and plants. The foyer is right behind.`;
+    
+    txt =`You step foot in the bedroom. A window lays ahead, absorbing any dim sunlight that traverse through heavy rain. The foyer is to your south.`;
     txt2=` `;
     if (!diaryTaken){
         txt2+=`On the wooden desk lays an open diary. `;
     }
     if (!pillsTaken){
-        txt2 += `By the side of the bed is a clear bottle of pills with the word Alzheimer written on it.`;
+        txt2 += `By the side of the bed is a green and white bottle of pills with "Donepezil hydrochloride tablets, 5mg" written on it. You wonder what's it for...`;
     }
     currentArea = 'Bedroom';
     typeText();
@@ -361,6 +395,9 @@ function entranceState(){
             
              ){
             foyerSetting();
+        }
+        else if (firstWord === `instruction`){
+            actionTxt ='Commands: NORTH (N), SOUTH (S), WEST (W), EAST (E), INSTRUCTION (I). The remaining commands are for you to explore! Type a command and Press Enter';
         }
         else if (
             enterKW.some(el=> firstWord==el) && !yelledMary ){
@@ -398,7 +435,7 @@ function entranceState(){
             actionTxt =`You can't press it.`;
         }
         else if (firstWord === 'ring' && finalInput.includes('doorbell') || firstWord === 'press' && finalInput.includes('doorbell')){
-            actionTxt =`You ringed the doorbell. Not a single sound. Damn thing is broken. Perhaps you should try yelling.`;
+            actionTxt =`You ringed the doorbell. Not a single sound. Damn thing is broken. Perhaps you should try to yell.`;
             doorbellBtnSFX.play();
         }
         else if (firstWord ==='yell' && !yelledMary){
@@ -418,7 +455,6 @@ function entranceState(){
 }
 //  **********************FOYER****************************
 function foyerState(){
-
     const input = document.getElementById("userInput").value;
     const finalInput = input.toLowerCase();
     const firstWord = finalInput.split(" ")[0];
@@ -426,7 +462,10 @@ function foyerState(){
     // typeText3();
         if (firstWord ==='north' || firstWord === 'n'){
           bedRoomSetting();
-        }  else if (firstWord==='south'|| firstWord=== 's' && response != 4){
+        }  
+        else if (firstWord === `instruction`){
+            actionTxt ='Commands: NORTH (N), SOUTH (S), WEST (W), EAST (E), INSTRUCTION (I). The remaining commands are for you to explore! Type a command and Press Enter';
+        } else if (firstWord==='south'|| firstWord=== 's' && response != 4){
           entranceSetting();
           
         }  else if(firstWord==='south'|| firstWord=== 's' && response === 4){
@@ -440,7 +479,7 @@ function foyerState(){
         }  
             // else if (firstWord ==='')
             else if (firstWord ==='look' && finalInput.includes('mail')){
-            actionTxt =`Electricity bills...Water bills.. and the Eviction Notice!... They are all .. opened? So Mary acknowledge her responsibility, yet fails to do so? Under these letters lies a 1 inch pile of medical bills.. `;
+            actionTxt =`Electricity bills...Water bills.. and the Eviction Notice!... They are all already opened, so they definitely were read, just ignored.  Under these letters lies a 1 inch pile of medical bills. Mary certainly demonstrates a clear pattern of iresponsibility.`;
         }   else if (firstWord ==='look' && finalInput.includes('picture')|| firstWord ==='look' && finalInput.includes('print')){
             actionTxt =`Beautiful pictures of an old couple travelling the world. You spot wedding pictures dated back in 2013. That was 10 years ago. Mary is seen grinning next to her supposedly husband. You couldn't help but smiling yourself... And here you thought marriage was off the table for 50 year olds.`;
         }   else if (firstWord ==='take' && finalInput.includes('mail') && metMary && !mailsTaken){
@@ -449,9 +488,8 @@ function foyerState(){
             updateInventory();
             mailsTaken = true;
         }   else if (firstWord ==='take' && finalInput.includes('picture') && metMary && !pictureTaken){
-            actionTxt =`You took the wedding picture.`;
+            actionTxt =`You took the wedding picture of a young Mary and her husband.`;
             updateInventory();
-
             // inventoryText.innerHTML += ` picture`;
             pictureTaken = true;
         }   else if (firstWord ==='take' && finalInput.includes('picture') && !metMary || firstWord ==='take' && finalInput.includes('mail') && !metMary){
@@ -475,6 +513,17 @@ function foyerState(){
 
 
 function kitchenState(){
+
+    if (metMary && !maryRealized){
+        if (boilingSFX.paused){
+            boilingSFX.play();
+        }
+        if (choppingSFX.paused){
+            choppingSFX.play();
+        }
+  
+    }
+
     console.log(`gift order:`+ giftOrder);
     const input = document.getElementById("userInput").value;
     const finalInput = input.toLowerCase();
@@ -487,7 +536,7 @@ function kitchenState(){
    if (response === 1 ){
     response=2;
     dialogueOn= true;
-    dialogueString = `Charles and I, we've been through thick and thin...we met in our forties and felt in love. Things were fine until he was diagnosed with cancer. We were poor but I insisted on getting him chemo. I truly did not mind the debt as long as he's still breathing with me. Little did I know, the damn fool stopped taking his meds. The debt was getting out of hand, so he just stopped taking them to speed up the process. I've always thought he was an honest man, even through tough times. Charles died 3 months ago.  I've never really been myself ever since.  `;
+    dialogueString = `Mary: "Charles and I, we've been through thick and thin...we met in our forties and felt in love. Things were fine until he was diagnosed with cancer. We were poor but I insisted on getting him chemo. I truly did not mind the debt as long as he's still breathing with me. Little did I know, the damn fool stopped taking his meds. The debt was getting out of hand, so he just stopped taking them to speed up the process. I've always thought he was an honest man, even through tough times. Charles died 3 months ago.  I've never really been myself ever since."  `;
     actionTxt = `You don't quite know what to say... Though you did come here with a mission... Now EVICT MARY or BACK OFF and leave through the entrance.`;
     typeText3();
 }
@@ -539,7 +588,9 @@ else if (response ===0 || response ===4){
             foyerSetting();
         }  else if (firstWord ==='north' || firstWord === 'n'|| firstWord ==='east' || firstWord === 'e' || firstWord ==='south' || firstWord === 's'){
             actionTxt =`You can't go that way.`;
-        }  else if (firstTwoWords ==='turn off' && finalInput.includes('faucet') && !faucetOff){
+        } else if (firstWord === `instruction`){
+            actionTxt ='Commands: NORTH (N), SOUTH (S), WEST (W), EAST (E), INSTRUCTION (I). The remaining commands are for you to explore! Type a command and Press Enter';
+        } else if (firstTwoWords ==='turn off' && finalInput.includes('faucet') && !faucetOff){
             actionTxt =`You closed the faucet. The drip stops dripping.`;
             faucetOff = true;
 
@@ -564,13 +615,20 @@ else if (response ===0 || response ===4){
         // }
          else if (firstWord ===`look` && finalInput.includes('cake')){
             actionTxt = `Just another slice of cake.`;
-        } else if (firstWord ===`eat` && finalInput.includes('cake')){
+        } else if (firstWord ===`eat` && finalInput.includes('cake') && !metMary){
             actionTxt = `You had to remind yourself that your mission here is to evict the tenant.`;
         }  
+        else if (firstWord ===`eat` && finalInput.includes('cake') && metMary){
+            dialogueOn = true;
+            dialogueString = `Mary: Oh please have at it!...`;
+            actionTxt = `Now with Mary permission, you chowed down on the delicious cake. It's tasty, but you feel guilty that you ate it when Mary doesn't know the full truth.`;
+            typeText3();
+        }  
         else if (firstWord ===`talk` && finalInput.includes('mary')){
+            choppingSFX.pause();
             dialogueOn = true;
             dialogueString = `Mary: Charles please get back to bed. If you behave I might add a sprinkle of beacon... The doctor doesn't have to know about this...`;
-            actionTxt = `Mary... still sees you as Charles? ... Try bringing her memorable items that will refresh her memory so you may evict her.`;
+            actionTxt = `Mary... still sees you as Charles? ... Perhaps you should remind her of her past by giving her some significant objects. Only then may you evict her.`;
             typeText3();
         }   
         
@@ -583,10 +641,10 @@ else if (response ===0 || response ===4){
             actionTxt = `Give mails to who?`;
         } 
         else if (firstWord ===`give` && finalInput.includes('pills') && !finalInput.includes('mary') && pillsTaken && giftOrder<=2 && !pillsGiven){
-            actionTxt = `Give mails to who?`;
+            actionTxt = `Give pills to who?`;
         } 
         else if (firstWord ===`give` && finalInput.includes('diary') && !finalInput.includes('mary') && diaryTaken && giftOrder<=2 && !diaryGiven){
-            actionTxt = `Give mails to who?`;
+            actionTxt = `Give diary to who?`;
         }
         
         // GIVING ACTIONS 
@@ -621,7 +679,7 @@ else if (response ===0 || response ===4){
             console.log('running')
             diaryGiven = true;            
             dialogueOn = true;
-            dialogueString = `Mary: "Hey noww...This is private! Oh.. that last bit I wrote? I..don't know either. I don't know what's gotten into me. It must have been the meds or my Alzheimer... I mean I always had nightmare of you being taken away from my life. But those are silly dreams. I'm glad you're still here with me."`;
+            dialogueString = `Mary: "Hey noww...This is private! Oh.. that last bit I wrote? I..don't know either. I don't know what's gotten into me. It must have been the meds ... I mean I always had nightmare of you being taken away from my life. But those are silly dreams. I'm glad you're still here with me."`;
    
             actionTxt = `She doesnt believe her own writings...but you're sure she'll remind at some point. Bring her notable objects of her past`;
             if (!pillsGiven){
@@ -647,7 +705,7 @@ else if (response ===0 || response ===4){
             giftOrder++;
             mailsGiven = true;            
             dialogueOn = true;
-            dialogueString = `Mary: "Stop. You're sick, and we're finding you the best treatment we could. We've discussed this many time - Your HEALTH is the focus, not the money. Ohh but who cares about the bills...  We'll find one way or another to get past it... "`;
+            dialogueString = `Mary: "Stop. You're sick, and we're finding you the best treatment we could. We've discussed this so many times - Your HEALTH is the focus, not the money. Ohh but who cares about the bills...  We'll find one way or another to get past it... "`;
             actionTxt = `Charles had cancer? She doesn't seem to remember just yet, bring her more proofs of Charles`;
             if (!pillsGiven){
                 actionTxt +=` and her dementia.`
@@ -658,7 +716,7 @@ else if (response ===0 || response ===4){
         
         //picture, pill, diary, note, mails
         else if(giftOrder ===3){
-            surpriseTxt=`CHARLES`;
+            surpriseTxt=`NOT CHARLES`;
             choppingSFX.pause();
             boilingSFX.pause();
       
@@ -669,8 +727,8 @@ else if (response ===0 || response ===4){
                 resetActionTxt();
                 pictureGiven = true;
                 dialogueOn = true;
-                dialogueString = `This is my wedding picture. Charles is a sweetheart... `;
-                dialogueString += `But you're not... `;
+                dialogueString = `Mary: This is my wedding picture. Charles is a sweetheart... `;
+                dialogueString += `But you're ... `;
                 actionTxt = `You broke the woman's heart. `;
                 typeText3();
             } else if (firstWord ===`give` && finalInput.includes('pill') && finalInput.includes('mary') && pillsTaken && !pillsGiven)  {
@@ -679,7 +737,7 @@ else if (response ===0 || response ===4){
                 pillsGiven = true;
                 dialogueOn = true;
                 dialogueString = `This is my Alzheimer pills. Charles always reminded me...But. `;
-                dialogueString += `But you're not... `;
+                dialogueString += `But you're ... `;
                 actionTxt = `You broke the woman's heart.`;
                 typeText3();
             } else if (firstWord ===`give` && finalInput.includes('diary') && finalInput.includes('mary') && diaryTaken && !diaryGiven)  {
@@ -688,7 +746,7 @@ else if (response ===0 || response ===4){
                diaryGiven = true;
                dialogueOn = true;
                dialogueString = `This last bit... But Charles already passed away... Who are you... `;
-               dialogueString += `But you're not... `;
+               dialogueString += `But you're ... `;
                actionTxt = `You broke the woman's heart.`;
                typeText3();
            } 
@@ -708,7 +766,7 @@ else if (response ===0 || response ===4){
                 mailsGiven = true;
                 dialogueOn = true;
                 dialogueString = `Unpaid bills... Aren't we drowning in debts... `;
-                dialogueString += `But you're not... `;
+                dialogueString += `But you're ... `;
                 actionTxt = `You broke the woman's heart.`;
                 typeText3();
             } 
@@ -768,6 +826,18 @@ function livingRoomState(){
     // if (currentArea === 'area'){
        if (firstWord==='east'|| firstWord=== 'e'){
            foyerSetting();
+        }   
+        else if (firstWord === `instruction`){
+            actionTxt ='Commands: NORTH (N), SOUTH (S), WEST (W), EAST (E), INSTRUCTION (I). The remaining commands are for you to explore! Type a command and Press Enter';
+        }   
+        else if (firstWord === `look` && finalInput.includes(`clock`)){
+            actionTxt =`The wood wall clock points at 10 AM. You hope the job will be done by lunch. You've never missed a lunch. Not now, not ever. Not for a tenant. She's old, but she's one of the many.`;
+        }
+        else if (firstWord === `look` && finalInput.includes(`tv`) && !tvOff){
+            actionTxt =`Some old commercials are playing on the TV.`;
+        } 
+        else if (firstWord === `look` && finalInput.includes(`tv`) && tvOff){
+            actionTxt =`The tv is now turned off.`;
         } 
         else if (firstTwoWords ==`turn off` && finalInput.includes(`tv`) && !tvOff){
             actionTxt =`You turned off the TV. You're not paid enough to deal with this headache... `;
@@ -815,7 +885,10 @@ function bedRoomState(){
     // if (currentArea === 'area'){
        if (firstWord==='south'|| firstWord=== 's'){
            foyerSetting();
-        } else if (firstWord ==='look' && finalInput.includes('diary') && metMary && !diaryTaken){
+        }     else if (firstWord === `instruction`){
+            actionTxt ='Commands: NORTH (N), SOUTH (S), WEST (W), EAST (E), INSTRUCTION (I). The remaining commands are for you to explore! Type a command and Press Enter';
+        } 
+        else if (firstWord ==='look' && finalInput.includes('diary') && metMary && !diaryTaken){
             actionTxt =`Mary's personal diary! March 2: I pray to the lord every day. Charles’ a sweetheart and a good soul.
             June: Oh how I hate this man. He keeps forgetting to take his meds. There are things you may forget, though for this you may not. Please Charles, I need you.
             Nov 16: Today he couldn’t finish half the steak, even though it’s his favorite. I don't know how much longer he has. Or how much longer I can hold on to hope.
@@ -828,13 +901,15 @@ function bedRoomState(){
             // inventoryText.innerHTML += diaryTxt;
             diaryTaken = true;
         }  else if (firstWord ==='look' && finalInput.includes('diary') && metMary && !diaryTaken){
-            actionTxt =`A bottle full of Alzheimer pill.`;
-        }else if (firstWord ==='take' && finalInput.includes('pills') && metMary && !pillsTaken){
+            actionTxt =`A bottle full of Donepezil pills. It reads  Donepezil Hydrochloride Tablets, 23mg.`;
+        } else if (firstWord ==='take' && finalInput.includes('pills') && metMary && !pillsTaken){
             actionTxt =`You took the pills.`;
             updateInventory();
             
             // inventoryText.innerHTML += pillsTxt;
             pillsTaken = true;
+        } else if (firstWord ==='look' && finalInput.includes('window') ){
+            actionTxt =`It's raining cats and dogs. The sun is no where to be seen, just sea of dark clouds. You ponder whether this is the best time to evict the tenant.`;
         } else if (firstWord ==='take' && finalInput.includes('diary') && !metMary && !diaryTaken || firstWord ==='take' && finalInput.includes('pill') && !metMary && !diaryTaken){
             actionTxt =`You have no reason to do so`;
         }
@@ -1022,6 +1097,7 @@ function easeOutTvVol(){
 
         function typeText5() {  
             // console.log('txt5');
+        maryRealized = true;
         typingDialogueSFX.loop = true;
             typingDialogueSFX.play();
         surpriseText.innerHTML ='';
