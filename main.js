@@ -262,7 +262,7 @@ function foyerSetting(){
                  txt2+=`Unopened mail enveloppes scatter on the ground.`;
                 }
         if (!pictureTaken){
-                txt2+=`The hallway's walls are decorated with a dozen framed picture.`;
+                txt2+=`The hallway's walls are decorated with a dozen framed pictures.`;
                 }
             currentArea = 'Foyer';
             typeText();
