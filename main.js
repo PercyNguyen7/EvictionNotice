@@ -387,7 +387,7 @@ function bedRoomSetting(){
     // }
     
     txt =`You step foot in the bedroom. A window lays ahead, absorbing any dim sunlight that traverse through heavy rain. The foyer is to your south.`;
-    txt2=`The bed is neatly made. Next to to the window is a little pot of plant.`;
+    txt2=`Next to to the window is a little pot of plant.`;
     if (!boxOpen){
         txt2+=` On top of the bed is a black box with a lock on it.`;
     }
@@ -984,6 +984,8 @@ function bedRoomState(){
         }
          else if (firstWord ==='look' && finalInput.includes('plant') && !keyTaken){
             actionTxt =`When you observe the soil closely, a little handle of a key is sticking out of the soil.`;
+        }  else if (firstWord ==='look' && finalInput.includes('key') && !keyTaken){
+            actionTxt =`A small metal key. It's of the same material as the box on her bed.`;
         } else if (firstWord ==='look' && finalInput.includes('plant') && keyTaken){
             actionTxt =`It's just a boring plant by the window`;
         } else if (firstWord ==='take' && finalInput.includes('key') && !keyTaken && !metMary){
@@ -995,7 +997,9 @@ function bedRoomState(){
             takeItemSFX.play();
         } else if (firstWord === `open` && finalInput.includes(`box`) && !keyTaken){
             actionTxt =`The box is locked`;
-        } else if (firstWord === `open` && finalInput.includes(`box`) && keyTaken){
+        } else if (firstWord === `look` && finalInput.includes(`bed`) ){
+            actionTxt =`It's Mary's bed.`;
+        }else if (firstWord === `open` && finalInput.includes(`box`) && keyTaken){
             actionTxt =`You opened the box to see a diary inside. You dropped the key on the bed`;
             boxOpen = true;
         }
