@@ -316,7 +316,7 @@ function kitchenSetting(){
         txt2=`${maryTxt}The fridge is humming rather loudly. ${faucetTxt} You see a slide of what seems like homemade cake laying on the table. ${remoteDescTxt}`;   
     }
     else {
-        txt2= `Mary is sobbing uncontrollably. She tries to calm down when she sees you stepping foot back inside.`
+        txt2= `Mary is sobbing uncontrollably. She tries to calm down when she sees you stepping foot back inside.`;
     }
 
     currentArea = 'Kitchen';
@@ -500,7 +500,7 @@ function foyerState(){
           entranceSetting();
           
         }  else if(firstWord==='south'|| firstWord=== 's' && response === 4){
-            actionTxt =`You spared Mary that day and found the help that she needed. She sent a thank you letter regarding your generosity.`;
+            actionTxt =`You spared Mary that day and found the help that she needed. She sent a thank you letter for your kindness.`;
             entranceSetting();
             bodyEl.classList.toggle('dark-mode');
         }   else if (firstWord==='east'|| firstWord=== 'e'){
@@ -569,7 +569,7 @@ function kitchenState(){
    if (response === 1 ){
     response=2;
     dialogueOn= true;
-    dialogueString = `Mary: "Charles and I, we've been through thick and thin...we met in our forties and felt in love. Things were fine until he was diagnosed with cancer. We were poor but I insisted on getting him chemo. I truly did not mind the debt as long as he's still breathing with me. Little did I know, the damn fool stopped taking his meds. The debt was getting out of hand, so he just stopped taking them to speed up the process. I've always thought he was an honest man, even through tough times. Charles died 3 months ago.  I've never really been myself ever since."  `;
+    dialogueString = `Mary: "Charles and I, we've been through thick and thin...we met in our forties and felt in love. Things were fine until he was diagnosed with cancer. We were poor but I insisted on chemo. I didn't mind the debt as long as he's still breathing with me. Little did I know, the damn fool stopped taking his meds. The debt was getting out of hand, so he just stopped taking them to speed up the process. I've always thought he was an honest man, even through tough times. Charles died 3 months ago.  I've never really been myself ever since."  `;
     actionTxt = `You don't quite know what to say... Though you did come here with a mission... Now EVICT MARY or SPARE MARY and leave through the entrance.`;
     typeText3();
 }
@@ -666,23 +666,31 @@ else if (response ===0 || response ===4){
         // }
          else if (firstWord ===`look` && finalInput.includes('cake')){
             actionTxt = `Just another slice of cake.`;
-        } else if (firstWord ===`eat` && finalInput.includes('cake') && !metMary){
+        } else if (firstWord ===`eat` && finalInput.includes('cake') ){
             actionTxt = `You had to remind yourself that your mission here is to evict the tenant.`;
         }  
-        else if (firstWord ===`eat` && finalInput.includes('cake') && metMary){
-            dialogueOn = true;
-            dialogueString = `Mary: Oh please have at it!...`;
-            actionTxt = `Now with Mary permission, you chowed down on the delicious cake. It's tasty, but you feel guilty that you ate it when Mary doesn't know the full truth.`;
-            typeText3();
-        }  
-        else if (firstWord ===`talk` && finalInput.includes('mary')){
+        // else if (firstWord ===`eat` && finalInput.includes('cake') && metMary){
+        //     dialogueOn = true;
+        //     dialogueString = `Mary: Oh please have at it!...`;
+        //     actionTxt = `Now with Mary permission, you chowed down on the delicious cake. It's tasty, but you feel guilty that you ate it when Mary doesn't know the full truth.`;
+        //     typeText3();
+        // }  
+        else if (firstWord === 'look' && finalInput.includes('mary') && metMary && !maryRealized){
+            actionTxt= `Mary seems to be enjoying her cooking! She reminds you to go to bed every time you stare at her.`;
+        }
+        else if (firstWord === 'look' && finalInput.includes('mary') && metMary && maryRealized){
+            actionTxt= `Shes slouching on the kitchen counter, shaking to the realization.`;
+        }
+        else if (firstWord ===`talk` && finalInput.includes('mary') && !maryRealized){
             choppingSFX.pause();
             dialogueOn = true;
-            dialogueString = `Mary: Charles please get back to bed. If you behave I might add a sprinkle of beacon... The doctor doesn't have to know about this...`;
+            dialogueString = `Mary: Charles please get back to bed. If you behave I might add a sprinkle of bacon... The doctor doesn't have to know about this...`;
             actionTxt = `Mary... still sees you as Charles? ... Perhaps you should remind her of her past by giving her some significant objects. Only then may you evict her.`;
             typeText3();
         }   
-        
+        else if (firstWord ===`talk` && finalInput.includes('mary') && maryRealized){
+            actionTxt = `It's best not to bother her right now.`;
+        }   
         // IF GIVE WITHOUT SPECIFYING MARY
         else if (firstWord ===`give` && finalInput.includes('picture') && !finalInput.includes('mary') && pictureTaken && giftOrder<=3 && !pictureGiven){
             actionTxt = `Give picture to who?`;
@@ -773,7 +781,8 @@ else if (response ===0 || response ===4){
       
                 // Now EVICT MARY or leave through the entrance.
             if (firstWord ===`give` && finalInput.includes('picture') && finalInput.includes('mary') && pictureTaken && !pictureGiven)  {
-            
+                txt2= `Mary is sobbing uncontrollably. She tries to calm down when she sees you stepping foot back inside.`
+                typeText();
                 specialDialogue = true;
                 resetActionTxt();
                 pictureGiven = true;
@@ -783,6 +792,8 @@ else if (response ===0 || response ===4){
                 actionTxt = `You broke the woman's heart. `;
                 typeText3();
             } else if (firstWord ===`give` && finalInput.includes('pill') && finalInput.includes('mary') && pillsTaken && !pillsGiven)  {
+                txt2= `Mary is sobbing uncontrollably. She tries to calm down when she sees you stepping foot back inside.`
+                typeText();
                 specialDialogue = true;
                  resetActionTxt();
                 pillsGiven = true;
@@ -792,6 +803,8 @@ else if (response ===0 || response ===4){
                 actionTxt = `You broke the woman's heart.`;
                 typeText3();
             } else if (firstWord ===`give` && finalInput.includes('diary') && finalInput.includes('mary') && diaryTaken && !diaryGiven)  {
+                txt2= `Mary is sobbing uncontrollably. She tries to calm down when she sees you stepping foot back inside.`
+                typeText();
                 specialDialogue = true;
                 resetActionTxt();
                diaryGiven = true;
@@ -812,6 +825,8 @@ else if (response ===0 || response ===4){
         //         typeText3();
         //     } 
             else if (firstWord ===`give` && finalInput.includes('mail') && finalInput.includes('mary') && mailsTaken && !mailsGiven)  {
+                txt2= `Mary is sobbing uncontrollably. She tries to calm down when she sees you stepping foot back inside.`
+                typeText();
                 specialDialogue = true;
                  resetActionTxt();
                 mailsGiven = true;
@@ -919,6 +934,9 @@ function livingRoomState(){
         }
         else if (firstWord === 'yell' && finalInput.includes('mary') && !tvOff){
             actionTxt= `You yelled at Mary but the soap drama TV overwhelms your voice.`;
+        }
+        else if (firstWord === 'look' && finalInput.includes('mary') && !metMary){
+            actionTxt= `Mary is napping peacefully away on the chair. No wonder why she couldn't hear you.`;
         }
         else if (firstWord === 'yell' && finalInput.includes('mary') && tvOff || firstWord === 'talk' && finalInput.includes('mary') && tvOff){      
             dialogueString=`"Charles...Is that you? But I thought I lost you for a second...Silly old me... Now now...Get back in bed love. I'll fix you up with your favorite dish the way you've always loved them... "`;
