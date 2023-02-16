@@ -461,7 +461,7 @@ function entranceState(){
             firstWord==='knock' && finalInput.includes('door')
             // || knockDoorKW.every(el => finalInput.includes(el))  
         ){
-            actionTxt =`You leaned in to knock on the already open door. And the silence echoes back. Now we only have your voice as the last peaceful method. `;
+            actionTxt =`You leaned in to knock on the already open door. And the silence echoes back. Now you may yell as the last peaceful method. `;
             doorKnockSFX.play();
         }
      
@@ -510,7 +510,7 @@ function foyerState(){
         }  
             // else if (firstWord ==='') 
             else if (firstWord ==='look' && finalInput.includes('mail')){
-            actionTxt =`Electricity bills...Water bills.. and the Eviction Notice!... They are all already opened, so they definitely were read, just ignored.  Under these letters lies a one inch pile of medical bills. Mary certainly demonstrates a clear pattern of iresponsibility.`;
+            actionTxt =`Electricity bills...Water bills.. and the Eviction Notice!... They are all already opened, so they definitely were read, just ignored.  Under these letters lies a one inch pile of medical bills. Mary certainly demonstrates a clear pattern of irresponsibility.`;
         }   else if (firstWord ==='look' && finalInput.includes('picture')|| firstWord ==='look' && finalInput.includes('print')){
             actionTxt =`Beautiful pictures of an old couple travelling the world. You spot wedding pictures dated back in 2013. That was 10 years ago. Mary is seen grinning next to her supposedly husband. You couldn't help but smiling yourself... And here you thought marriage was off the table for 50 year olds.`;
         }   else if (firstWord ==='take' && finalInput.includes('mail') && metMary && !mailsTaken){
@@ -569,15 +569,15 @@ function kitchenState(){
    if (response === 1 ){
     response=2;
     dialogueOn= true;
-    dialogueString = `Mary: "Charles and I, we've been through thick and thin...we met in our forties and felt in love. Things were fine until he was diagnosed with cancer. We were poor but I insisted on chemo. I didn't mind the debt as long as he's still breathing with me. Little did I know, the damn fool stopped taking his meds. The debt was getting out of hand, so he just stopped taking them to speed up the process. I've always thought he was an honest man, even through tough times. Charles died 3 months ago.  I've never really been myself ever since."  `;
-    actionTxt = `You don't quite know what to say... Though you did come here with a mission... Now EVICT MARY or SPARE MARY and leave through the entrance.`;
+    dialogueString = `Mary: "Charles and I, we've been through thick and thin...we met in our forties and felt in love. Things were fine until he was diagnosed with cancer. We were poor but I insisted on chemo. I didn't mind the debt as long as he's still breathing with me. Little did I know, the damn fool stopped taking his meds. The debt was getting out of hand, so he just stopped taking them to speed up the process. I never had any say in it. He did it all in silence. For a smart man he can make real stupid decisions. Charles passed away 3 months ago and I've never really been myself ever since."  `;
+    actionTxt = `Stunned, you don't quite know what to say... Though you did come here with a mission... Now EVICT MARY or SPARE MARY and leave through the entrance.`;
     typeText3();
 }
 // if evict mary EVICT ROUTE
 else if (response ===2 && firstTwoWords === `evict mary`){
     response=3;
     dialogueOn= true;
-    dialogueString = `Mary: "I'm sorry for the trouble." Mary ran in her room and came back with some loose change. "This is all I have left. Please spare me today... I want to go my way. I want to see Charles again." `;
+    dialogueString = `Mary: "I'm sorry for the trouble." Mary ran in her room and came back with some loose change. "This is all I have left. Please spare me today... I want to go my way. I want to see Charles again. I will be gone by tomorrow." `;
     actionTxt = `You may EVICT ANYWAY or SPARE TODAY`;
     typeText3();
 }
@@ -764,7 +764,7 @@ else if (response ===0 || response ===4){
             giftOrder++;
             mailsGiven = true;            
             dialogueOn = true;
-            dialogueString = `Mary: "Stop. You're sick, and we're finding you the best treatment we could. We've discussed this so many times - Your HEALTH is the focus, not the money. Ohh but who cares about the bills...  We'll find one way or another to get past it... "`;
+            dialogueString = `Mary: "Stop, Charles. You're sick, and we're finding you the best treatment we could. We've discussed this so many times - Your HEALTH is the focus, not the money. Ohh but who cares about the bills...  We'll find one way or another to get past it... "`;
             actionTxt = `Charles had cancer? She doesn't seem to remember just yet, bring her more proofs of Charles`;
             if (!pillsGiven){
                 actionTxt +=` and her dementia.`
