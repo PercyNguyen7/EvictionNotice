@@ -599,7 +599,7 @@ else if (response ===3 && firstTwoWords === `spare today`){
     txt2 = ` `;
     typeText();
     dialogueString = `Thank you.`;
-    actionTxt = `You came back the next day to see the apartment empty, as promised. You wonder where she's at, but such is not the task of a bailiff. `;
+    actionTxt = `You came back the next day to see the apartment empty, as promised. You wonder where she's at, but such is not the responsibility of a bailiff. You've succesfully done your job. `;
     typeText3();
     response = `mary left ending`;
 }
